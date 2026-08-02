@@ -1,0 +1,11 @@
+# We pull ns3 via official releases archives.
+# It's faster and a bit more lightweight than cloning.
+
+[wrap-file]
+url = https://www.nsnam.org/releases/ns-3.48.tar.bz2
+source_filename = ns-3.48.tar.bz2
+source_hash = 5700ceecef2c9bc862502914b2237fe798d4c7ae07652247050e300e49407c4d
+patch_directory = ns-3
+
+[provide]
+program_names = ns3

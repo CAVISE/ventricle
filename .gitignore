@@ -1,0 +1,17 @@
+/build*/
+/.cache/
+/.clangd/
+/compile_commands.json
+
+# Meson downloads pinned upstream releases here, but does not build them.
+/subprojects/ns-3/
+/subprojects/vanetza/
+/subprojects/packagecache/
+/subprojects/.wraplock
+
+# Editor and profiling artifacts.
+*.gcda
+*.gcno
+*.profraw
+*.swp
+*~
