@@ -7,23 +7,30 @@ AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
 BinPackArguments: false
-BinPackParameters: OnePerLine
+BinPackParameters: false
 BreakBeforeBraces: Attach
 BreakConstructorInitializers: BeforeComma
-BreakFunctionDefinitionParameters: true
+BreakFunctionDefinitionParameters: false
 BreakTemplateDeclarations: Yes
-ColumnLimit: 100
+ColumnLimit: 150
 IncludeBlocks: Regroup
 IncludeCategories:
   - Regex: '^"src/'
     Priority: 1
-  - Regex: '^<'
+  - Regex: '^<[[:alnum:]_]+>$'
     Priority: 2
-  - Regex: '.*'
+  - Regex: '^<absl/'
     Priority: 3
+  - Regex: '^<ns3/'
+    Priority: 4
+  - Regex: '^<'
+    Priority: 5
+  - Regex: '.*'
+    Priority: 6
 IndentWidth: 4
 NamespaceIndentation: All
 PointerAlignment: Left
+PenaltyBreakBeforeFirstCallParameter: 0
 PenaltyReturnTypeOnItsOwnLine: 1000000
 SortIncludes: CaseSensitive
 Standard: c++20

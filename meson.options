@@ -1,0 +1,6 @@
+option(
+  'sumo_root',
+  type: 'string',
+  value: '',
+  description: 'SUMO installation prefix containing share/sumo/cmake/SUMOConfig.cmake',
+)
