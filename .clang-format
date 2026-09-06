@@ -10,9 +10,11 @@ BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBraces: Attach
 BreakConstructorInitializers: BeforeComma
+BreakInheritanceList: BeforeComma
 BreakFunctionDefinitionParameters: false
 BreakTemplateDeclarations: Yes
 ColumnLimit: 150
+ConstructorInitializerIndentWidth: 4
 IncludeBlocks: Regroup
 IncludeCategories:
   - Regex: '^"src/'
@@ -29,6 +31,7 @@ IncludeCategories:
     Priority: 6
 IndentWidth: 4
 NamespaceIndentation: All
+PackConstructorInitializers: Never
 PointerAlignment: Left
 PenaltyBreakBeforeFirstCallParameter: 0
 PenaltyReturnTypeOnItsOwnLine: 1000000

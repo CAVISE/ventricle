@@ -122,6 +122,7 @@ absl::Status TraciDomainSubscriptionManager<Domain>::refresh(const std::string& 
 		if (state.state_ == SubscriptionState::Stale) {
 			continue;
 		}
+
 		for (const auto variable : state.variables_) {
 			const auto position = std::ranges::lower_bound(variables, variable);
 			if (position == variables.end() || *position != variable) {
@@ -133,14 +134,17 @@ absl::Status TraciDomainSubscriptionManager<Domain>::refresh(const std::string& 
 	if (variables.empty()) {
 		return port_->unsubscribe<Domain>(objectId);
 	}
+
 	return port_->subscribe<Domain>(objectId, variables);
 }
 
 absl::Status TraciSubscriptions::onTraciStart(TraciPort* port) {
 	ABSL_CHECK(port) << "TraCI subscriptions require a port";
+
 	if (port_) {
 		return absl::FailedPreconditionError("TraCI subscriptions are already active");
 	}
+
 	port_ = port;
 	for (const auto& managerEntry : managers_) {
 		const auto& manager = managerEntry.second;
@@ -152,25 +156,30 @@ absl::Status TraciSubscriptions::onTraciStart(TraciPort* port) {
 			return status;
 		}
 	}
+
 	return absl::OkStatus();
 }
 
 absl::Status TraciSubscriptions::onTraciStep(TraciPort* port, ns3::Time time) {
 	ABSL_CHECK(port) << "TraCI subscriptions require a port";
+
 	for (const auto& managerEntry : managers_) {
 		const auto& manager = managerEntry.second;
 		if (const auto status = manager->onTraciStep(port, time); !status.ok()) {
 			return status;
 		}
 	}
+
 	return absl::OkStatus();
 }
 
 void TraciSubscriptions::onTraciEnd(TraciPort* port) {
 	ABSL_CHECK(port) << "TraCI subscriptions require a port";
+
 	for (const auto& managerEntry : managers_) {
 		managerEntry.second->onTraciEnd(port);
 	}
+
 	port_ = nullptr;
 }
 

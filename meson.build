@@ -101,4 +101,16 @@ vanetza_dep = vanetza_subproject.dependency('btp', include_type: 'system')
 
 ventricle_include = include_directories('.')
 
+# Share one interpreter and pytest configuration across extension test suites.
+python = import('python').find_installation(
+  get_option('test_python'),
+  modules: ['pytest', 'pytest_asyncio'],
+  required: get_option('integration_tests'),
+)
+pytest_config = files('pytest.ini')
+
+if python.found()
+  subdir('testing')
+endif
+
 subdir('src')

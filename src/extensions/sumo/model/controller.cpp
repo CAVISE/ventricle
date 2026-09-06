@@ -2,13 +2,12 @@
 
 #include "src/extensions/sumo/model/traci_listener.hpp"
 
-#include <algorithm>
 #include <iomanip>
 #include <sstream>
 #include <utility>
 
-#include <absl/log/absl_check.h>
 #include <absl/log/absl_log.h>
+#include <absl/status/status.h>
 #include <absl/status/status_builder.h>
 
 #include <ns3/boolean.h>
@@ -20,13 +19,26 @@ using namespace vcle::sumo;
 
 NS_OBJECT_ENSURE_REGISTERED(Controller);
 
+namespace {
+
+	std::vector<std::string> parseCommand(const std::string& command) {
+		std::istringstream stream {command};
+		std::vector<std::string> out;
+		for (std::string argument; stream >> std::quoted(argument); /* noop */) {
+			out.push_back(std::move(argument));
+		}
+
+		return out;
+	}
+
+}
+
 ns3::TypeId Controller::GetTypeId() {
 	/* clang-format off */
 	static ns3::TypeId typeId =
 		ns3::TypeId("vcle::sumo::Controller")
 			.SetParent<ns3::Object>()
 			.SetGroupName("Ventricle")
-			.AddConstructor<Controller>()
 			.AddAttribute(
 				"StepInterval",
 				"Interval between synchronized TraCI steps.",
@@ -80,38 +92,18 @@ ns3::TypeId Controller::GetTypeId() {
 	return typeId;
 }
 
-Controller::~Controller() {
-	if (const auto status = stop(); !status.ok()) {
-		ABSL_LOG(ERROR) << "Failed to stop TraCI controller: " << status;
-	}
-}
-
-absl::Status Controller::configure(TraciPort& port, TraciNodeManager& nodeManager) {
-	if (port_) {
-		return absl::FailedPreconditionError("TraCI controller already has a port configured");
-	} else if (nodeManager_) {
-		return absl::FailedPreconditionError("TraCI controller already has a node manager configured");
-	}
-
-	port_ = &port;
-	nodeManager_ = &nodeManager;
-	return absl::OkStatus();
+Controller::Controller(TraciPort& port, TraciNodeManager& nodeManager)
+	: port_(&port)
+	, nodeManager_(&nodeManager) {
 }
 
 absl::Status Controller::start() {
-	if (!(port_ && nodeManager_)) {
-		return absl::FailedPreconditionError("TraCI controller is not configured");
-	}
-
 	// This reads CLI args from a string, preserving quoted stuff.
-	std::istringstream stream(config_.command_);
 	std::vector<std::string> command;
-	for (std::string argument; stream >> std::quoted(argument); /* noop */) {
-		command.push_back(std::move(argument));
-	}
-
-	if (command.empty()) {
-		return absl::InvalidArgumentError("SUMO command is empty");
+	if (command = parseCommand(config_.command_); command.empty()) {
+		auto error = absl::InvalidArgumentError("SUMO command is empty");
+		error.SetPayload("command", absl::Cord(config_.command_));
+		return error;
 	}
 
 	/* clang-format off */
@@ -127,32 +119,18 @@ absl::Status Controller::start() {
 	}
 	/* clang-format on */
 
-	for (auto listener = listeners_.begin(); listener != listeners_.end(); /* noop */) {
-		if (const auto status = (*listener)->onTraciStart(port_); !status.ok()) {
-			ABSL_LOG(WARNING) << "TraCI listener failed to start and was removed: " << status;
-			listener = listeners_.erase(listener);
-		} else {
-			++listener;
-		}
-	}
-
+	invokeListeners(&ITraciListener::onTraciStart, port_);
 	stepEvent_ = ns3::Simulator::Schedule(stepInterval_, &Controller::step, this);
+
 	return absl::OkStatus();
 }
 
 absl::Status Controller::stop() {
-	if (port_ == nullptr) {
-		return absl::OkStatus();
-	}
-
 	if (stepEvent_.IsPending()) {
 		ns3::Simulator::Cancel(stepEvent_);
 	}
 
-	for (auto* listener : listeners_) {
-		listener->onTraciEnd(port_);
-	}
-
+	invokeListeners(&ITraciListener::onTraciEnd, port_);
 	return absl::StatusBuilder(port_->close()).SetPrepend() << "closing TraCI port: ";
 }
 
@@ -163,23 +141,8 @@ void Controller::DoDispose() {
 
 	port_ = nullptr;
 	nodeManager_ = nullptr;
+
 	ns3::Object::DoDispose();
-}
-
-void Controller::addListener(ITraciListener* listener) {
-	ABSL_CHECK(listener) << "Null listener";
-	ABSL_CHECK(std::ranges::find(listeners_, listener) == listeners_.end()) << "Listener is already registered";
-
-	listeners_.push_back(listener);
-}
-
-void Controller::removeListener(ITraciListener* listener) {
-	ABSL_CHECK(listener) << "Null listener";
-
-	const auto iterator = std::ranges::find(listeners_, listener);
-	if (iterator != listeners_.end()) {
-		listeners_.erase(iterator);
-	}
 }
 
 void Controller::step() {
@@ -222,14 +185,7 @@ absl::Status Controller::processStep() {
 		}
 	}
 
-	for (auto listener = listeners_.begin(); listener != listeners_.end(); /* noop */) {
-		if (const auto status = (*listener)->onTraciStep(port_, now); !status.ok()) {
-			ABSL_LOG(WARNING) << "TraCI listener failed to update and was removed: " << status;
-			listener = listeners_.erase(listener);
-		} else {
-			++listener;
-		}
-	}
+	invokeListeners(&ITraciListener::onTraciStep, port_, now);
 
 	return absl::OkStatus();
 }

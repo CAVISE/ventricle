@@ -8,13 +8,11 @@
 #include <iomanip>
 #include <sstream>
 
+#include <absl/log/absl_check.h>
+
 #include <ns3/string.h>
 
 namespace vcle::sumo {
-	TraciHelper::TraciHelper() {
-		controllerFactory_.SetTypeId(Controller::GetTypeId());
-	}
-
 	void TraciHelper::setCommand(std::vector<std::string> command) {
 		std::ostringstream commandLine;
 		for (auto argument = command.begin(); argument != command.end(); ++argument) {
@@ -23,11 +21,18 @@ namespace vcle::sumo {
 			}
 			commandLine << std::quoted(*argument);
 		}
-		controllerFactory_.Set("Command", ns3::StringValue(commandLine.str()));
+		setAttribute("Command", ns3::StringValue(commandLine.str()));
 	}
 
 	void TraciHelper::setAttribute(const std::string& name, const ns3::AttributeValue& value) {
-		controllerFactory_.Set(name, value);
+		if (name.empty()) {
+			return;
+		}
+		ns3::TypeId::AttributeInformation info;
+		ABSL_CHECK(Controller::GetTypeId().LookupAttributeByName(name, &info)) << "Unknown controller attribute: " << name;
+		auto checkedValue = info.checker->CreateValidValue(value);
+		ABSL_CHECK(checkedValue) << "Invalid controller attribute value: " << name;
+		controllerAttributes_[name] = checkedValue;
 	}
 
 	void TraciHelper::addListener(ITraciListener& listener) {
@@ -39,9 +44,9 @@ namespace vcle::sumo {
 	absl::StatusOr<Installation> TraciHelper::install(TraciNodeManager& nodeManager) const {
 		Installation installation;
 		installation.port_ = std::make_unique<TraciPort>();
-		installation.controller_ = controllerFactory_.Create<Controller>();
-		if (const auto status = installation.controller_->configure(*installation.port_, nodeManager); !status.ok()) {
-			return status;
+		installation.controller_ = ns3::CreateObject<Controller>(*installation.port_, nodeManager);
+		for (const auto& [name, value] : controllerAttributes_) {
+			installation.controller_->SetAttribute(name, *value);
 		}
 		for (auto* listener : listeners_) {
 			installation.controller_->addListener(listener);

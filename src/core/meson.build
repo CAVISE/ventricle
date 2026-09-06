@@ -5,6 +5,7 @@ ventricle_core_dep = declare_dependency(
 	sources: files(
 		'defs.hpp',
 		'simulation/nodes.hpp',
+		'simulation/listeners.hpp',
 		'type_glue.hpp',
 		'version.hpp',
 	),

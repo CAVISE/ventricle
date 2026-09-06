@@ -63,7 +63,7 @@ namespace vcle::sumo::test {
 			nodes.Get(0)->AggregateObject(mobility);
 			TraciNodeManager manager(nodes, [](auto) {}, [](auto) {});
 			TraciMobilityManager mobilityManager(subscriptions.get<libtraci::Vehicle>());
-			manager.addListener(mobilityManager);
+			manager.addListener(&mobilityManager);
 
 			const auto added = manager.addVehicle("vehicle-1");
 			NS_TEST_ASSERT_MSG_EQ(added.ok(), true, added.status());
@@ -85,7 +85,7 @@ namespace vcle::sumo::test {
 			NS_TEST_ASSERT_MSG_EQ_TOL(mobility->GetVelocity().x, 12.0, 1e-9, "x velocity differs");
 			NS_TEST_ASSERT_MSG_EQ_TOL(mobility->GetVelocity().y, 0.0, 1e-9, "y velocity differs");
 			NS_TEST_ASSERT_MSG_EQ(manager.removeVehicle("vehicle-1").ok(), true, "vehicle removal failed");
-			manager.removeListener(mobilityManager);
+			manager.removeListener(&mobilityManager);
 		}
 	};
 

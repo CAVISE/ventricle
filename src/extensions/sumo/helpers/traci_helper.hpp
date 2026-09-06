@@ -4,6 +4,7 @@
 #include "src/extensions/sumo/model/controller.hpp"
 #include "src/extensions/sumo/model/traci_port.hpp"
 
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -11,7 +12,6 @@
 #include <absl/status/statusor.h>
 
 #include <ns3/attribute.h>
-#include <ns3/object-factory.h>
 #include <ns3/ptr.h>
 
 namespace vcle::sumo {
@@ -30,7 +30,7 @@ namespace vcle::sumo {
 	class TraciHelper {
 	public:
 		/** Construct a helper using the controller's default attributes. */
-		TraciHelper();
+		TraciHelper() = default;
 
 		/** Set the command used to launch SUMO. */
 		void setCommand(std::vector<std::string> command);
@@ -43,7 +43,7 @@ namespace vcle::sumo {
 		absl::StatusOr<Installation> install(TraciNodeManager& nodeManager) const;
 
 	private:
-		ns3::ObjectFactory controllerFactory_;
+		std::map<std::string, ns3::Ptr<ns3::AttributeValue>> controllerAttributes_;
 		std::vector<ITraciListener*> listeners_;
 	};
 

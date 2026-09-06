@@ -1,11 +1,11 @@
 #pragma once
 
+#include "src/core/simulation/listeners.hpp"
 #include "src/extensions/sumo/model/traci_listener.hpp"
 #include "src/extensions/sumo/model/traci_node_manager.hpp"
 #include "src/extensions/sumo/model/traci_port.hpp"
 
 #include <string>
-#include <vector>
 
 #include <absl/status/status.h>
 
@@ -15,31 +15,45 @@
 
 namespace vcle::sumo {
 
-	/** Keeps an external SUMO simulation synchronized with the ns-3 event loop. */
-	class Controller : public ns3::Object {
+	/**
+	 * @brief Synchronizes an external SUMO simulation with the ns-3 event loop.
+	 *
+	 * Launch settings and the synchronization interval are configured through ns-3 attributes.
+	 * Each step advances SUMO, updates vehicle-node associations, and notifies registered listeners.
+	 * Listener failures are logged and remove the listener; synchronization failures stop the controller.
+	 *
+	 * @note The TraCI port, node manager, and listeners are externally owned.
+	 */
+	class Controller
+		: public ns3::Object
+		, public PublisherBase<ITraciListener> {
 	public:
 		static ns3::TypeId GetTypeId();
 
-		Controller() = default;
-		~Controller() override;
+		/**
+		 * @brief Construct a controller without starting the SUMO connection.
+		 * @param[in] port Externally owned TraCI connection used to control SUMO.
+		 * @param[in] nodeManager Externally owned manager of vehicle-node associations.
+		 */
+		Controller(TraciPort& port, TraciNodeManager& nodeManager);
+		~Controller() override = default;
 
 		Controller(const Controller&) = delete;
 		Controller& operator=(const Controller&) = delete;
 
-		/** Attach the TraCI port and node manager used by this controller. */
-		absl::Status configure(TraciPort& port, TraciNodeManager& nodeManager);
-
-		/** Start SUMO and schedule synchronization at the current simulation time. */
+		/**
+		 * @brief Launch SUMO, notify start listeners, and schedule the first synchronization step.
+		 * @return OK when started; an error if the command is empty or the TraCI connection fails to start.
+		 * @note The first step is scheduled one StepInterval after the current simulation time.
+		 * Listener errors remove the listener but do not cause this operation to fail.
+		 */
 		absl::Status start();
-		/** Cancel synchronization and close the SUMO connection. */
-		absl::Status stop();
-		/** Return the first asynchronous synchronization failure, if any. */
-		const absl::Status& status() const;
 
-		/** Register an externally owned lifecycle listener. */
-		void addListener(ITraciListener* listener);
-		/** Stop notifying a previously registered lifecycle listener. */
-		void removeListener(ITraciListener* listener);
+		/**
+		 * @brief Cancel the pending step, notify end listeners, and close the TraCI connection.
+		 * @return OK when closed, or the connection's close error with controller context.
+		 */
+		absl::Status stop();
 
 	private:
 		/* ns3::Object implementation*/
@@ -48,38 +62,25 @@ namespace vcle::sumo {
 		void step();
 		absl::Status processStep();
 
-		/** Store the quoted SUMO command line. */
 		void setCommand(std::string command);
-		/** Return the quoted SUMO command line. */
 		VCLE_NODISCARD std::string getCommand() const;
-		/** Store the TCP port passed to libtraci. */
 		void setLaunchPort(int port);
-		/** Return the TCP port passed to libtraci. */
 		VCLE_NODISCARD int getLaunchPort() const;
-		/** Store the number of libtraci connection attempts. */
 		void setRetries(int retries);
-		/** Return the number of libtraci connection attempts. */
 		VCLE_NODISCARD int getRetries() const;
-		/** Store whether verbose libtraci output is enabled. */
 		void setVerbose(bool verbose);
-		/** Return whether verbose libtraci output is enabled. */
 		VCLE_NODISCARD bool getVerbose() const;
-		/** Store the libtraci trace output file. */
 		void setTraceFile(std::string traceFile);
-		/** Return the libtraci trace output file. */
 		VCLE_NODISCARD std::string getTraceFile() const;
-		/** Store whether getter calls are included in traces. */
 		void setTraceGetters(bool traceGetters);
-		/** Return whether getter calls are included in traces. */
 		VCLE_NODISCARD bool getTraceGetters() const;
 
 	private:
-		TraciPort* port_ = nullptr;
-		TraciNodeManager* nodeManager_ = nullptr;
+		TraciPort* port_;
+		TraciNodeManager* nodeManager_;
 
 		ns3::Time stepInterval_;
 		ns3::EventId stepEvent_;
-		std::vector<ITraciListener*> listeners_;
 		absl::Status status_;
 
 		struct {

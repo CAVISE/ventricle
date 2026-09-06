@@ -9,3 +9,13 @@
 *.profraw
 *.swp
 *~
+
+# Python test environments and caches.
+/.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+.ruff_cache/
+
+# Persistent integration-test artifacts.
+.test-results/

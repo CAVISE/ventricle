@@ -1,9 +1,10 @@
 #pragma once
 
+#include "src/core/simulation/listeners.hpp"
 #include "src/core/simulation/nodes.hpp"
+#include "src/extensions/sumo/model/traci_node_listener.hpp"
 
 #include <string>
-#include <vector>
 
 #include <absl/container/flat_hash_map.h>
 #include <absl/status/status.h>
@@ -12,18 +13,20 @@
 #include <ns3/ptr.h>
 
 namespace vcle::sumo {
-	class ITraciNodeListener;
 
-	/** Extends the generic recyclable node pool with SUMO vehicle identity. */
-	class TraciNodeManager final : public DynamicNodeManager {
+	/**
+	 * @brief Extends the generic recyclable node pool with SUMO vehicle identity.
+	 * @note Use addVehicle() and removeVehicle() for SUMO vehicles. The inherited addNode()
+	 * and removeNode() operations do not update vehicle associations or notify vehicle listeners.
+	 */
+	class TraciNodeManager
+		: public DynamicNodeManager
+		, public PublisherBase<ITraciNodeListener> {
 	public:
 		/** Maps SUMO vehicle identifiers to their active ns-3 nodes. */
 		using VehicleMap = absl::flat_hash_map<std::string, ns3::Ptr<ns3::Node>>;
 
 		using DynamicNodeManager::DynamicNodeManager;
-
-		/* DynamicNodeManager implementation*/
-		void removeNode(ns3::Ptr<ns3::Node> node) override;
 
 		/** Activate a pooled node and associate it with @p vehicleId. */
 		absl::StatusOr<ns3::Ptr<ns3::Node>> addVehicle(const std::string& vehicleId);
@@ -33,14 +36,9 @@ namespace vcle::sumo {
 		VCLE_NODISCARD ns3::Ptr<ns3::Node> findVehicle(const std::string& vehicleId) const;
 		/** Access all active vehicle-to-node associations. */
 		VCLE_NODISCARD const VehicleMap& vehicles() const;
-		/** Register an externally owned vehicle-node lifecycle listener. */
-		void addListener(ITraciNodeListener& listener);
-		/** Stop notifying a previously registered vehicle-node lifecycle listener. */
-		void removeListener(ITraciNodeListener& listener);
 
 	private:
 		VehicleMap vehicles_;
-		std::vector<ITraciNodeListener*> listeners_;
 	};
 
 } // namespace vcle::sumo

@@ -1,13 +1,8 @@
 #pragma once
 
-#include <cstddef>
 #include <cstdint>
+#include <cstdio>
 #include <string>
-#include <string_view>
-#include <vector>
-
-#include <absl/strings/numbers.h>
-#include <absl/strings/str_split.h>
 
 #include <ns3/abort.h>
 
@@ -46,13 +41,26 @@ namespace vcle {
 
 	private:
 		static int fetchVersionComponent(Component component) {
-			const std::vector<std::string_view> components = absl::StrSplit(version_, '.');
-			NS_ABORT_MSG_UNLESS(components.size() == 3, "Ventricle version is not semantic");
-			int value;
-			if (absl::SimpleAtoi(components.at(static_cast<std::size_t>(component)), &value)) {
-				return value;
+			const char* t = nullptr;
+
+			switch (component) {
+			case Component::MAJOR:
+				t = "%d:%*d:%*d";
+				break;
+			case Component::MINOR:
+				t = "%*d:%d:%*d";
+				break;
+			case Component::PATCH:
+				t = "%*d:%*d:%d";
+				break;
 			}
-			NS_ABORT_MSG("Ventricle version component is not numeric");
+
+			if (int component = 0; std::sscanf(version_, t, &component) > 0) {
+				return component;
+			}
+
+			// This path should be unreachable generally.
+			NS_ABORT_MSG("could not fetch version component");
 		}
 
 	private:

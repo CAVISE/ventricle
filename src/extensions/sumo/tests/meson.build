@@ -21,3 +21,7 @@ test(
   sumo_listener_test,
   args: ['--suite=ventricle-traci-listener'],
 )
+
+if python.found()
+  subdir('integration')
+endif

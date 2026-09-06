@@ -21,7 +21,7 @@ absl::Status TraciPort::start(
 
 	/* clang-format off */
 	if (const auto result = invoke(
-			"starting simulation",
+			detail::traciStartOperation,
 			&libtraci::Simulation::start,
 			command,
 			port,
@@ -43,7 +43,7 @@ absl::Status TraciPort::start(
 }
 
 absl::Status TraciPort::step(double time) {
-	return invoke("advancing simulation", &libtraci::Simulation::step, time);
+	return invoke(detail::traciStepOperation, &libtraci::Simulation::step, time);
 }
 
 absl::Status TraciPort::close() {
@@ -51,7 +51,7 @@ absl::Status TraciPort::close() {
 		return absl::OkStatus();
 	}
 
-	const auto status = invoke("closing simulation", &libtraci::Simulation::close, "Ventricle requested termination.");
+	const auto status = invoke(detail::traciCloseOperation, &libtraci::Simulation::close, "Ventricle requested termination.");
 	if (status.ok()) {
 		port_ = -1;
 	}
@@ -64,9 +64,9 @@ int TraciPort::port() const {
 }
 
 absl::StatusOr<std::vector<std::string>> TraciPort::departedVehicles() const {
-	return invoke("reading departed vehicles", &libtraci::Simulation::getDepartedIDList);
+	return invoke(detail::traciDepartedVehiclesOperation, &libtraci::Simulation::getDepartedIDList);
 }
 
 absl::StatusOr<std::vector<std::string>> TraciPort::arrivedVehicles() const {
-	return invoke("reading arrived vehicles", &libtraci::Simulation::getArrivedIDList);
+	return invoke(detail::traciArrivedVehiclesOperation, &libtraci::Simulation::getArrivedIDList);
 }
