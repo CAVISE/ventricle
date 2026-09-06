@@ -3,8 +3,10 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+
 #include <ns3/mac48-address.h>
 #include <ns3/test.h>
+
 #include <vanetza/net/mac_address.hpp>
 
 namespace vcle::itsg5 {
@@ -16,6 +18,7 @@ namespace vcle::itsg5 {
 			}
 
 		private:
+			/* ns3::TestCase implementation*/
 			void DoRun() override {
 				vanetza::MacAddress source;
 				source.octets = {0x02, 0x11, 0x22, 0x33, 0x44, 0x55};
@@ -24,11 +27,7 @@ namespace vcle::itsg5 {
 				const auto restored = TypeGlue::convert<vanetza::MacAddress>(ns3Address);
 
 				for (std::size_t i = 0; i < source.octets.size(); ++i) {
-					NS_TEST_EXPECT_MSG_EQ(
-						restored.octets[i],
-						source.octets[i],
-						"address octet changed during round-trip conversion"
-					);
+					NS_TEST_EXPECT_MSG_EQ(restored.octets[i], source.octets[i], "address octet changed during round-trip conversion");
 				}
 			}
 		};
@@ -46,9 +45,3 @@ namespace vcle::itsg5 {
 		AddressConversionTestSuite AddressConversionTests;
 	} // namespace
 } // namespace vcle::itsg5
-
-int main(
-	int argc, char** argv
-) {
-	return ns3::TestRunner::Run(argc, argv);
-}

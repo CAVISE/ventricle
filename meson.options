@@ -1,0 +1,20 @@
+option(
+  'sumo_root',
+  type: 'string',
+  value: '',
+  description: 'SUMO installation prefix containing share/sumo/cmake/SUMOConfig.cmake',
+)
+
+option(
+  'integration_tests',
+  type: 'feature',
+  value: 'disabled',
+  description: 'Enable Python integration tests across extensions',
+)
+
+option(
+  'test_python',
+  type: 'string',
+  value: 'python3',
+  description: 'Python interpreter name or path for integration tests',
+)

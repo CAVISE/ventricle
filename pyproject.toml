@@ -1,0 +1,13 @@
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+extend-exclude = '/(subprojects|build[^/]*|\.venv)/'
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+target-version = "py310"
+extend-exclude = ["subprojects", "build*", ".venv"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

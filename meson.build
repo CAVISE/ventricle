@@ -47,6 +47,38 @@ run_target(
 
 cmake = import('cmake')
 
+abseil_dep = dependency(
+  'absl',
+  method: 'cmake',
+  modules: ['absl::flat_hash_map', 'absl::flat_hash_set', 'absl::log', 'absl::log_initialize', 'absl::status', 'absl::status_builder', 'absl::statusor', 'absl::strings'],
+)
+
+sumo_cmake_args = []
+sumo_root = get_option('sumo_root')
+
+if sumo_root != ''
+  sumo_cmake_args += ['-DCMAKE_PREFIX_PATH=' + sumo_root]
+endif
+
+sumo_cmake_dep = dependency(
+  'SUMO',
+  method: 'cmake',
+  modules: ['SUMO::libtracicpp'],
+  cmake_args: sumo_cmake_args,
+)
+
+sumo_dep = sumo_cmake_dep
+if host_machine.system() == 'darwin' and sumo_root != ''
+  # Meson's CMake bridge mistakes paths below *.framework for framework binaries.
+  cpp = meson.get_compiler('cpp')
+  sumo_dep = declare_dependency(
+    dependencies: [
+      sumo_cmake_dep.partial_dependency(compile_args: true, includes: true),
+      cpp.find_library('tracicpp', dirs: [sumo_root / 'lib']),
+    ],
+  )
+endif
+
 vanetza_options = cmake.subproject_options()
 vanetza_options.add_cmake_defines({
   'BUILD_TESTS': false,
@@ -59,6 +91,7 @@ vanetza_options.add_cmake_defines({
   'VANETZA_WITH_RPC': false,
   'VANETZA_WITH_CRYPTOPP': false,
   'VANETZA_WITH_OPENSSL': true,
+  'VANETZA_NET_WITH_POSIX': false,
 })
 
 vanetza_subproject = cmake.subproject('vanetza', options: vanetza_options)
@@ -67,5 +100,17 @@ vanetza_subproject = cmake.subproject('vanetza', options: vanetza_options)
 vanetza_dep = vanetza_subproject.dependency('btp', include_type: 'system')
 
 ventricle_include = include_directories('.')
+
+# Share one interpreter and pytest configuration across extension test suites.
+python = import('python').find_installation(
+  get_option('test_python'),
+  modules: ['pytest', 'pytest_asyncio'],
+  required: get_option('integration_tests'),
+)
+pytest_config = files('pytest.ini')
+
+if python.found()
+  subdir('testing')
+endif
 
 subdir('src')
