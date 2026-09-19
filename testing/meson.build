@@ -4,7 +4,7 @@ test(
   args: [
     '-m', 'pytest',
     '-c', pytest_config,
-    files('tests/test_async_executor.py'),
+    meson.current_source_dir() / 'tests',
     '-q',
     '--basetemp=' + (meson.current_build_dir() / 'pytest-tmp'),
   ],

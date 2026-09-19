@@ -4,9 +4,9 @@ from dataclasses import dataclass, fields
 from pathlib import Path
 from tempfile import mkdtemp
 
-from testing import AsyncExector, ExecutionResult
+from testing import AsyncExector
 
-RESULTS_DIR = Path(__file__).parent / ".test-results" / "sumo"
+RESULTS_DIR = Path(__file__).parent / '.test-results' / 'sumo'
 
 
 @dataclass
@@ -24,7 +24,7 @@ class SumoSettings:
     num_clients: int | None = None
     time_to_teleport: float | None = None
     collision_action: str | None = None
-    xml_validation: str = "never"
+    xml_validation: str = 'never'
     no_step_log: bool = True
     duration_log_disable: bool = True
     verbose: bool = False
@@ -36,16 +36,16 @@ class SumoSettings:
             value = getattr(self, field.name)
             if value is None:
                 continue
-            option = field.name.replace("_", "-")
-            if field.name == "duration_log_disable":
-                option = "duration-log.disable"
+            option = field.name.replace('_', '-')
+            if field.name == 'duration_log_disable':
+                option = 'duration-log.disable'
             if isinstance(value, Path):
                 value = value.resolve()
             elif isinstance(value, tuple):
-                value = ",".join(str(path.resolve()) for path in value)
+                value = ','.join(str(path.resolve()) for path in value)
             elif isinstance(value, bool):
                 value = str(value).lower()
-            args.extend((f"--{option}", str(value)))
+            args.extend((f'--{option}', str(value)))
         return args
 
 
@@ -65,37 +65,41 @@ class SumoStatistics:
     precision: int = 6
 
     def arguments(self, directory: Path) -> list[str]:
-        args = ["--precision", str(self.precision)]
+        args = ['--precision', str(self.precision)]
         for output in (
-            "tripinfo",
-            "fcd",
-            "summary",
-            "vehroute",
-            "collision",
-            "statistic",
+            'tripinfo',
+            'fcd',
+            'summary',
+            'vehroute',
+            'collision',
+            'statistic',
         ):
             if getattr(self, output):
-                args.extend((f"--{output}-output", str(directory / f"{output}.xml")))
-        for output in ("tripinfo", "vehroute"):
+                args.extend((f'--{output}-output', str(directory / f'{output}.xml')))
+        for output in ('tripinfo', 'vehroute'):
             if getattr(self, output):
                 args.extend(
                     (
-                        f"--{output}-output.write-unfinished",
+                        f'--{output}-output.write-unfinished',
                         str(self.write_unfinished).lower(),
                     )
                 )
         if self.fcd:
             args.extend(
-                ("--fcd-output.acceleration", str(self.fcd_acceleration).lower())
+                ('--fcd-output.acceleration', str(self.fcd_acceleration).lower())
             )
-            args.extend(("--fcd-output.signals", str(self.fcd_signals).lower()))
+            args.extend(('--fcd-output.signals', str(self.fcd_signals).lower()))
         return args
 
 
 @dataclass(frozen=True)
-class SumoResult(ExecutionResult):
+class SumoResult:
     """Process output plus paths to this invocation's persistent artifacts."""
 
+    args: tuple[str, ...]
+    returncode: int
+    stdout: str
+    stderr: str
     statistics_dir: Path
     stdout_path: Path
     stderr_path: Path
@@ -123,35 +127,35 @@ class SumoRunner(AsyncExector):
         settings: SumoSettings | None = None,
         statistics: SumoStatistics | None = None,
     ) -> SumoResult:
-        """Run a scenario; optional settings replace fixture defaults for this invocation.
+        """
+        Run a scenario; optional settings replace fixture defaults for this invocation.
 
         Additional CLI arguments are passed last. Captured stdout/stderr remain
         available on the result and are also saved alongside statistics.
         """
         settings = settings if settings is not None else self.settings
         statistics = statistics if statistics is not None else self.statistics
-        for directory in ("statistics", "stdout", "err"):
+        for directory in ('statistics', 'stdout', 'err'):
             (RESULTS_DIR / directory).mkdir(parents=True, exist_ok=True)
         statistics_dir = Path(
-            mkdtemp(prefix=f"{scenario.stem}-", dir=RESULTS_DIR / "statistics")
+            mkdtemp(prefix=f'{scenario.stem}-', dir=RESULTS_DIR / 'statistics')
         )
-        stdout_path = RESULTS_DIR / "stdout" / f"{statistics_dir.name}.log"
-        stderr_path = RESULTS_DIR / "err" / f"{statistics_dir.name}.log"
+        stdout_path = RESULTS_DIR / 'stdout' / f'{statistics_dir.name}.log'
+        stderr_path = RESULTS_DIR / 'err' / f'{statistics_dir.name}.log'
 
-        result = await self.run(
-            "--configuration-file",
-            scenario.resolve(),
+        arguments = (
+            '--configuration-file',
+            str(scenario.resolve()),
             *settings.arguments(),
             *statistics.arguments(statistics_dir),
-            *args,
+            *(str(arg) for arg in args),
         )
-        stdout_path.write_text(result.stdout or "")
-        stderr_path.write_text(result.stderr or "")
+        returncode = await self.run(*arguments, stdout=stdout_path, stderr=stderr_path)
         return SumoResult(
-            args=result.args,
-            returncode=result.returncode,
-            stdout=result.stdout,
-            stderr=result.stderr,
+            args=(str(self.binary), *self.base_args, *arguments),
+            returncode=returncode,
+            stdout=stdout_path.read_text(),
+            stderr=stderr_path.read_text(),
             statistics_dir=statistics_dir,
             stdout_path=stdout_path,
             stderr_path=stderr_path,
