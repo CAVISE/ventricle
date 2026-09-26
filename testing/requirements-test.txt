@@ -3,3 +3,4 @@ pytest-asyncio>=1.0,<2
 black>=24.10,<27
 ruff>=0.9,<1
 loguru>=0.7,<1
+PyYAML>=6,<7

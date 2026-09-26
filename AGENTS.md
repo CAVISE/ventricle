@@ -45,6 +45,7 @@ to address upstream warnings.
 ## C++ style
 
 - Use C++20 and format C/C++ sources with the root `.clang-format` file.
+- Within function bodies, group statements by purpose and separate those groups with blank lines to improve readability.
 - Write declarations and statements without manual line wrapping; only keep line breaks introduced
   by `clang-format`.
 - Use `#pragma once` in headers.

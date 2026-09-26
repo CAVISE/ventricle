@@ -1,4 +1,5 @@
 sumo_sources = files(
+  'extension.cpp',
   'helpers/traci_helper.cpp',
   'model/controller.cpp',
   'model/mobility/traci_mobility_manager.cpp',
@@ -8,7 +9,7 @@ sumo_sources = files(
   'model/traci_subscription_manager.cpp',
 )
 
-ventricle_sumo = static_library(
+ventricle_sumo = shared_library(
   'ventricle-sumo',
   sumo_sources,
   dependencies: [ventricle_core_dep, sumo_dep],

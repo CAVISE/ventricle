@@ -1,5 +1,3 @@
-"""Override these fixtures in child conftest files to customize SUMO startup."""
-
 import os
 from pathlib import Path
 from uuid import uuid4
@@ -30,9 +28,7 @@ def sumo_layout(layout: FilesystemLayout) -> SumoLayout:
 
 
 @pytest.fixture
-def sumo_runner(
-    tmp_path: Path, sumo_settings: SumoSettings, sumo_layout: ProgramIOLayout
-) -> SumoRunner:
+def sumo_runner(tmp_path: Path, sumo_layout: ProgramIOLayout) -> SumoRunner:
     return SumoRunner(
         Path(os.environ['SUMO_BINARY']),
         layout=sumo_layout,

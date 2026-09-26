@@ -11,10 +11,3 @@ option(
   value: 'disabled',
   description: 'Enable Python integration tests across extensions',
 )
-
-option(
-  'test_python',
-  type: 'string',
-  value: 'python3',
-  description: 'Python interpreter name or path for integration tests',
-)

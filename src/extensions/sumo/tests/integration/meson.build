@@ -14,7 +14,9 @@ test(
     '--basetemp=' + (meson.current_build_dir() / 'pytest-tmp'),
     meson.current_source_dir(),
   ],
-  env: {'SUMO_BINARY': sumo_binary.full_path()},
+  env: {
+    'SUMO_BINARY': sumo_binary.full_path(),
+  },
   workdir: meson.current_build_dir(),
   suite: ['integration', 'sumo'],
   timeout: 120,

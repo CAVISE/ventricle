@@ -1,4 +1,4 @@
 Checks: '-*,bugprone-*,performance-*,portability-*,modernize-*,-modernize-use-trailing-return-type,-portability-avoid-pragma-once'
 WarningsAsErrors: '*'
-HeaderFilterRegex: 'src/.*'
+HeaderFilterRegex: 'src/.*\.hpp$'
 FormatStyle: file
