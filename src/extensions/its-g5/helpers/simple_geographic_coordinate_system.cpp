@@ -16,9 +16,7 @@ ns3::TypeId SimpleGeographicCoordinateSystem::GetTypeId() {
 				"EarthSpheroid",
 				"Earth spheroid used for geographic conversions",
 				ns3::EnumValue(ns3::GeographicPositions::WGS84),
-				ns3::MakeEnumAccessor<ns3::GeographicPositions::EarthSpheroidType>(
-					&SimpleGeographicCoordinateSystem::Spheroid_
-				),
+				ns3::MakeEnumAccessor<ns3::GeographicPositions::EarthSpheroidType>(&SimpleGeographicCoordinateSystem::spheroid_),
 				ns3::MakeEnumChecker(
 					ns3::GeographicPositions::SPHERE,
 					"Sphere",
@@ -31,22 +29,15 @@ ns3::TypeId SimpleGeographicCoordinateSystem::GetTypeId() {
 	return typeId;
 }
 
-SimpleGeographicCoordinateSystem::SimpleGeographicCoordinateSystem(
-	GeographicPosition origin
-)
-	: Origin_(origin) {
+SimpleGeographicCoordinateSystem::SimpleGeographicCoordinateSystem(GeographicPosition origin)
+	: origin_(origin) {
 }
 
-GeographicPosition SimpleGeographicCoordinateSystem::ToGeographic(
-	const ns3::Vector& position
-) const {
-	const ns3::Vector geographic =
-		Conv::TopocentricToGeographicCoordinates(position, Origin_, Spheroid_);
+GeographicPosition SimpleGeographicCoordinateSystem::toGeographic(const ns3::Vector& position) const {
+	const ns3::Vector geographic = Conv::TopocentricToGeographicCoordinates(position, origin_, spheroid_);
 	return geographic;
 }
 
-ns3::Vector SimpleGeographicCoordinateSystem::ToCartesian(
-	const GeographicPosition& position
-) const {
-	return Conv::GeographicToTopocentricCoordinates(position, Origin_, Spheroid_);
+ns3::Vector SimpleGeographicCoordinateSystem::toCartesian(const GeographicPosition& position) const {
+	return Conv::GeographicToTopocentricCoordinates(position, origin_, spheroid_);
 }

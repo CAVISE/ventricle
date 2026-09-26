@@ -2,6 +2,7 @@
 #include "src/extensions/its-g5/model/runtime.hpp"
 
 #include <chrono>
+
 #include <ns3/simulator.h>
 #include <ns3/test.h>
 
@@ -16,13 +17,10 @@ namespace vcle::itsg5 {
 			}
 
 		private:
+			/* ns3::TestCase implementation*/
 			void DoRun() override {
 				const auto duration = vanetza::Clock::duration(123456us);
-				NS_TEST_EXPECT_MSG_EQ(
-					TypeGlue::convert<ns3::Time>(duration).GetMicroSeconds(),
-					123456,
-					"Vanetza duration changed during conversion"
-				);
+				NS_TEST_EXPECT_MSG_EQ(TypeGlue::convert<ns3::Time>(duration).GetMicroSeconds(), 123456, "Vanetza duration changed during conversion");
 				NS_TEST_EXPECT_MSG_EQ(
 					TypeGlue::convert<vanetza::Clock::duration>(ns3::MicroSeconds(987654)).count(),
 					987654,
@@ -38,6 +36,7 @@ namespace vcle::itsg5 {
 			}
 
 		private:
+			/* ns3::TestCase implementation*/
 			void DoRun() override {
 				Runtime runtime;
 				bool called = false;
@@ -64,6 +63,7 @@ namespace vcle::itsg5 {
 			}
 
 		private:
+			/* ns3::TestCase implementation*/
 			void DoRun() override {
 				Runtime runtime;
 				bool called = false;
@@ -94,8 +94,6 @@ namespace vcle::itsg5 {
 	} // namespace
 } // namespace vcle::itsg5
 
-int main(
-	int argc, char** argv
-) {
+int main(int argc, char** argv) {
 	return ns3::TestRunner::Run(argc, argv);
 }

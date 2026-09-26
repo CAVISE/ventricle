@@ -15,21 +15,21 @@ namespace vcle::itsg5 {
 	 * `EarthSpheroid` ns-3 attribute selects the Earth model used for conversion.
 	 * Refer to ns3 documentation on differences.
 	 */
-	class SimpleGeographicCoordinateSystem final : public ns3::Object,
-												   public IGeographicCoordinateSystem {
+	class SimpleGeographicCoordinateSystem final : public ns3::Object, public IGeographicCoordinateSystem {
 	public:
 		/* ns3 runtime configuration. */
 		static ns3::TypeId GetTypeId();
 
+		/** Construct a coordinate system centered at @p origin. */
 		explicit SimpleGeographicCoordinateSystem(GeographicPosition origin);
 
-		/* IGeographicCoordinateSystem implementation */
-		GeographicPosition ToGeographic(const ns3::Vector& position) const override;
-		ns3::Vector ToCartesian(const GeographicPosition& position) const override;
+		/* IGeographicCoordinateSystem implementation*/
+		GeographicPosition toGeographic(const ns3::Vector& position) const override;
+		ns3::Vector toCartesian(const GeographicPosition& position) const override;
 
 	private:
-		ns3::Vector Origin_;
-		ns3::GeographicPositions::EarthSpheroidType Spheroid_ = ns3::GeographicPositions::WGS84;
+		ns3::Vector origin_;
+		ns3::GeographicPositions::EarthSpheroidType spheroid_ = ns3::GeographicPositions::WGS84;
 	};
 
 } // namespace vcle::itsg5

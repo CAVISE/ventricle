@@ -2,7 +2,7 @@
 # Modules #
 ###########
 
-# The reserch nature of this project dictates the modular approach to
+# The research nature of this project dictates the modular approach to
 # configure simulations with everything they need and no more than that.
 # The layout of each module is what ns3 suggests:
 # - tests/ with local module-related tests
@@ -14,5 +14,8 @@
 subdir('core')
 
 # Here all extension modules go.
+subdir('extensions/dynamic-loader')
 subdir('extensions/radio')
 subdir('extensions/its-g5')
+subdir('extensions/sumo')
+subdir('extensions/yaml-config')

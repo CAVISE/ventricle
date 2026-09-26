@@ -1,0 +1,10 @@
+# Subproject source or built artifacts. Prefer putting them here.
+/ns-*/
+/vanetza-*/
+/glaze-*/
+
+# Meson downloaded archives
+/packagecache/
+
+# I dunno what this is
+/.wraplock

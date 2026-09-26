@@ -10,40 +10,51 @@
 #include <span>
 #include <vector>
 
-namespace NVentricle::NRadio {
-	enum class EAccessTechnology : std::uint8_t {
+namespace vcle::radio {
+	/** Radio access technologies supported by simulator backends. */
+	enum class AccessTechnology : std::uint8_t {
 		ItsG5,
 		NrV2x,
 	};
 
-	struct TPacket {
-		std::vector<std::byte> Payload;
+	/** Bytes carried by a simulated radio transmission. */
+	struct Packet {
+		std::vector<std::byte> payload_;
 	};
 
-	struct TTransmitRequest {
-		NCore::TStationId Source;
-		TPacket Packet;
-		std::uint8_t TrafficClass = 0;
+	/** Describes one outgoing radio packet. */
+	struct TransmitRequest {
+		NCore::TStationId source_;
+		Packet packet_;
+		std::uint8_t trafficClass_ = 0;
 	};
 
-	struct TReceiveIndication {
-		NCore::TStationId Destination;
-		NCore::TStationId Source;
-		TPacket Packet;
-		NCore::TSimTime ReceptionTime;
-		double SignalDbm = 0.0;
+	/** Describes one packet delivered by a radio backend. */
+	struct ReceiveIndication {
+		NCore::TStationId destination_;
+		NCore::TStationId source_;
+		Packet packet_;
+		NCore::TSimTime receptionTime_;
+		double signalDbm_ = 0.0;
 	};
 
-	using TReceiveHandler = std::function<void(TReceiveIndication)>;
+	/** Callback invoked for received radio packets. */
+	using ReceiveHandler = std::function<void(ReceiveIndication)>;
 
+	/** Abstracts a radio technology implementation from its users. */
 	class IRadioBackend {
 	public:
 		virtual ~IRadioBackend() = default;
 
-		virtual EAccessTechnology Technology() const = 0;
-		VCLE_NODISCARD virtual NCore::TStatus AddStation(NCore::TStationId stationId) = 0;
-		VCLE_NODISCARD virtual NCore::TStatus RemoveStation(NCore::TStationId stationId) = 0;
-		VCLE_NODISCARD virtual NCore::TStatus Transmit(TTransmitRequest request) = 0;
-		virtual void SetReceiveHandler(TReceiveHandler handler) = 0;
+		/** Return the technology implemented by this backend. */
+		virtual AccessTechnology technology() const = 0;
+		/** Register @p stationId with the backend. */
+		VCLE_NODISCARD virtual NCore::TStatus addStation(NCore::TStationId stationId) = 0;
+		/** Remove @p stationId from the backend. */
+		VCLE_NODISCARD virtual NCore::TStatus removeStation(NCore::TStationId stationId) = 0;
+		/** Submit one packet for transmission. */
+		VCLE_NODISCARD virtual NCore::TStatus transmit(TransmitRequest request) = 0;
+		/** Replace the handler for received packets. */
+		virtual void setReceiveHandler(ReceiveHandler handler) = 0;
 	};
-} // namespace NVentricle::NRadio
+} // namespace vcle::radio

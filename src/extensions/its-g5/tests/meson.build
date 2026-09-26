@@ -6,25 +6,25 @@ runtime_test = executable(
 
 address_conversion_test = executable(
 	'address-conversion-test',
-	'address_conversion_test.cpp',
+	['address_conversion_test.cpp', 'main.cpp'],
 	dependencies: [ventricle_itsg5_dep],
 )
 
 packet_conversion_test = executable(
   'packet-conversion-test',
-  'packet_conversion_test.cpp',
+  ['packet_conversion_test.cpp', 'main.cpp'],
   dependencies: [ventricle_itsg5_dep],
 )
 
 position_conversion_test = executable(
   'position-conversion-test',
-  'position_conversion_test.cpp',
+  ['position_conversion_test.cpp', 'main.cpp'],
   dependencies: [ventricle_itsg5_dep],
 )
 
 geographic_coordinate_system_test = executable(
 	'geographic-coordinate-system-test',
-	'geographic_coordinate_system_test.cpp',
+	['geographic_coordinate_system_test.cpp', 'main.cpp'],
 	dependencies: [ventricle_itsg5_dep],
 )
 
