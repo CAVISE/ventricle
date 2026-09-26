@@ -28,4 +28,4 @@ namespace vcle::config {
 
 	};
 
-} // namespace vcle::yaml_config
+} // namespace vcle::config

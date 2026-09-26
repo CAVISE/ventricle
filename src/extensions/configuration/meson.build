@@ -6,13 +6,13 @@ if not glaze_dep.found()
   glaze_dep = glaze_project.dependency('glaze_glaze', include_type: 'system')
 endif
 
-yaml_config_library = static_library(
-  'ventricle-yaml-config',
+configuration_library = static_library(
+  'ventricle-configuration',
   'model/schema.cpp',
   override_options: ['cpp_std=c++23'],
   dependencies: [ventricle_core_dep, glaze_dep],
 )
-yaml_config_dep = declare_dependency(
-  link_with: yaml_config_library,
+configuration_dep = declare_dependency(
+  link_with: configuration_library,
   dependencies: ventricle_core_dep,
 )
