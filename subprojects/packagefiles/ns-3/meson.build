@@ -23,7 +23,16 @@ ns3_version = meson.project_version()
 ns3_profile = 'default'
 
 # Final monolith target that ventricide will link to.
-ns3_library_name = 'libns@0@-monolib-@1@.so'.format(ns3_version, ns3_profile)
+ns3_library_suffix = 'so'
+if host_machine.system() == 'darwin'
+  ns3_library_suffix = 'dylib'
+endif
+
+ns3_library_name = 'libns@0@-monolib-@1@.@2@'.format(
+  ns3_version,
+  ns3_profile,
+  ns3_library_suffix,
+)
 ns3_library = ns3_library_dir / ns3_library_name
 
 ns3_dep = declare_dependency(
@@ -38,6 +47,7 @@ ns3_configure_command = [
   'configure',
   '-d', ns3_profile,
   '--enable-monolib',
+  '--disable-logs',
   '--disable-examples',
   '--disable-tests',
   '--enable-modules=' + ';'.join(ns3_modules),

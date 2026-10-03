@@ -1,0 +1,12 @@
+diff --git a/vanetza/geodesy/CMakeLists.txt b/vanetza/geodesy/CMakeLists.txt
+index 566a230..eaf3be2 100644
+--- a/vanetza/geodesy/CMakeLists.txt
++++ b/vanetza/geodesy/CMakeLists.txt
+@@ -4,6 +4,7 @@ add_vanetza_component(geodesy
+     geodesy.cpp
+     haversine.cpp
+ )
++target_link_libraries(geodesy PUBLIC Boost::headers common)
+ 
+ if(VANETZA_WITH_GEOGRAPHICLIB)
+     target_sources(geodesy PRIVATE geographiclib.cpp)

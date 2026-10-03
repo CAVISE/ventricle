@@ -17,9 +17,7 @@ namespace vcle {
 	 */
 	template <typename From, typename To>
 	concept TypeGlueConvertible = requires(From&& from) {
-		{
-			TypeGlueConverter<std::remove_cvref_t<From>, To>::convert(std::forward<From>(from))
-		} -> std::same_as<To>;
+		{ TypeGlueConverter<std::remove_cvref_t<From>, To>::convert(std::forward<From>(from)) } -> std::same_as<To>;
 	};
 
 	/**
@@ -31,14 +29,11 @@ namespace vcle {
 	 */
 	class TypeGlue {
 	public:
+		/** Convert @p from to the explicitly selected destination type. */
 		template <typename To, typename From>
 			requires TypeGlueConvertible<From, To>
-		static To convert(
-			From&& from
-		) {
-			return TypeGlueConverter<std::remove_cvref_t<From>, To>::convert(
-				std::forward<From>(from)
-			);
+		static To convert(From&& from) {
+			return TypeGlueConverter<std::remove_cvref_t<From>, To>::convert(std::forward<From>(from));
 		}
 	};
 

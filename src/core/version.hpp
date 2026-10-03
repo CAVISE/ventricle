@@ -2,6 +2,8 @@
 
 #include <cstdint>
 #include <cstdio>
+#include <string>
+
 #include <ns3/abort.h>
 
 namespace vcle {
@@ -14,20 +16,25 @@ namespace vcle {
 	 */
 	class Version {
 	public:
+		/** Selects one numeric semantic-version component. */
 		enum class Component : std::uint8_t { MAJOR, MINOR, PATCH };
 
+		/** Return the major version component. */
 		static int major() noexcept {
 			return fetchVersionComponent(Component::MAJOR);
 		}
 
+		/** Return the minor version component. */
 		static int minor() noexcept {
 			return fetchVersionComponent(Component::MINOR);
 		}
 
+		/** Return the patch version component. */
 		static int patch() noexcept {
 			return fetchVersionComponent(Component::PATCH);
 		}
 
+		/** Return the complete semantic version string. */
 		static std::string version() noexcept {
 			return version_;
 		}

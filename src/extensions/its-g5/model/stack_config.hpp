@@ -8,11 +8,12 @@
 
 namespace vcle::itsg5 {
 
+	/** Configuration copied into one installed ITS-G5 stack. */
 	struct StackConfig {
-		vanetza::MacAddress MacAddress;
-		vanetza::geonet::Address GeoNetworkingAddress;
-		vanetza::geonet::MIB GeoNetworking;
-		std::uint_fast32_t RandomSeed = 0;
+		vanetza::MacAddress macAddress_;
+		vanetza::geonet::Address geoNetworkingAddress_;
+		vanetza::geonet::MIB geoNetworking_;
+		std::uint_fast32_t randomSeed_ = 0;
 	};
 
 } // namespace vcle::itsg5

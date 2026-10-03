@@ -23,11 +23,9 @@ namespace vcle::itsg5 {
 	public:
 		virtual ~IGeographicCoordinateSystem() = default;
 
-		VCLE_NODISCARD virtual GeographicPosition ToGeographic(
-			const ns3::Vector& position
-		) const = 0;
-		VCLE_NODISCARD virtual ns3::Vector ToCartesian(
-			const GeographicPosition& position
-		) const = 0;
+		/** Convert an ns-3 Cartesian @p position to geographic coordinates. */
+		VCLE_NODISCARD virtual GeographicPosition toGeographic(const ns3::Vector& position) const = 0;
+		/** Convert a geographic @p position to ns-3 Cartesian coordinates. */
+		VCLE_NODISCARD virtual ns3::Vector toCartesian(const GeographicPosition& position) const = 0;
 	};
 } // namespace vcle::itsg5

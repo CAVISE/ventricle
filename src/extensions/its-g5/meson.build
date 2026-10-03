@@ -1,4 +1,5 @@
 itsg5_sources = files(
+  'extension.cpp',
 	'helpers/simple_geographic_coordinate_system.cpp',
   'helpers/packet_conversion.cpp',
   'helpers/position_conversion.cpp',
@@ -8,7 +9,7 @@ itsg5_sources = files(
   'model/stack.cpp',
 )
 
-ventricle_itsg5 = static_library(
+ventricle_itsg5 = shared_library(
   'ventricle-its-g5',
   itsg5_sources,
   dependencies: [ventricle_core_dep, ns3_dep, vanetza_dep],

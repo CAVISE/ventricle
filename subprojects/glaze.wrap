@@ -1,0 +1,6 @@
+[wrap-file]
+directory = glaze-9.0.0
+method = cmake
+source_url = https://codeload.github.com/stephenberry/glaze/tar.gz/refs/tags/v9.0.0
+source_filename = glaze-9.0.0.tar.gz
+source_hash = dd7b033c5bf6e4308615bb7834c541291d5b20f64121d9a68222a39414635517

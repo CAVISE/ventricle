@@ -1,0 +1,8 @@
+<net version="1.9" junctionCornerDetail="5" limitTurnSpeed="5.50">
+    <location netOffset="0.00,0.00" convBoundary="0.00,0.00,100.00,0.00" origBoundary="0.00,0.00,100.00,0.00" projParameter="!"/>
+    <edge id="road" from="start" to="end" priority="1">
+        <lane id="road_0" index="0" speed="10.00" length="100.00" shape="0.00,-1.60 100.00,-1.60"/>
+    </edge>
+    <junction id="start" type="dead_end" x="0.00" y="0.00" incLanes="" intLanes="" shape="0.00,0.00 0.00,-3.20"/>
+    <junction id="end" type="dead_end" x="100.00" y="0.00" incLanes="road_0" intLanes="" shape="100.00,-3.20 100.00,0.00"/>
+</net>

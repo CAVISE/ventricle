@@ -8,15 +8,17 @@ namespace vcle::itsg5 {
 	namespace {
 		class GeographicOriginTest final : public ns3::TestCase {
 		public:
-			GeographicOriginTest() : TestCase("maps the geographic origin to Cartesian zero") {
+			GeographicOriginTest()
+				: TestCase("maps the geographic origin to Cartesian zero") {
 			}
 
 		private:
+			/* ns3::TestCase implementation*/
 			void DoRun() override {
 				const SimpleGeographicCoordinateSystem coordinateSystem({48.0, 11.0, 500.0});
 
-				const auto cartesian = coordinateSystem.ToCartesian({48.0, 11.0, 500.0});
-				const auto geographic = coordinateSystem.ToGeographic({0.0, 0.0, 0.0});
+				const auto cartesian = coordinateSystem.toCartesian({48.0, 11.0, 500.0});
+				const auto geographic = coordinateSystem.toGeographic({0.0, 0.0, 0.0});
 
 				NS_TEST_EXPECT_MSG_EQ_TOL(cartesian.x, 0.0, 1e-6, "origin has an east offset");
 				NS_TEST_EXPECT_MSG_EQ_TOL(cartesian.y, 0.0, 1e-6, "origin has a north offset");
@@ -29,23 +31,21 @@ namespace vcle::itsg5 {
 
 		class SpheroidAttributeTest final : public ns3::TestCase {
 		public:
-			SpheroidAttributeTest() : TestCase("uses the spheroid selected by attribute") {
+			SpheroidAttributeTest()
+				: TestCase("uses the spheroid selected by attribute") {
 			}
 
 		private:
+			/* ns3::TestCase implementation*/
 			void DoRun() override {
-				auto coordinateSystem = ns3::CreateObject<SimpleGeographicCoordinateSystem>(
-					GeographicPosition{48.0, 11.0, 500.0});
-				coordinateSystem->SetAttribute("EarthSpheroid",
-											   ns3::EnumValue(ns3::GeographicPositions::SPHERE));
-				const auto sphere = coordinateSystem->ToGeographic({100000.0, 0.0, 0.0});
+				auto coordinateSystem = ns3::CreateObject<SimpleGeographicCoordinateSystem>(GeographicPosition{48.0, 11.0, 500.0});
+				coordinateSystem->SetAttribute("EarthSpheroid", ns3::EnumValue(ns3::GeographicPositions::SPHERE));
+				const auto sphere = coordinateSystem->toGeographic({100000.0, 0.0, 0.0});
 
-				coordinateSystem->SetAttribute("EarthSpheroid",
-											   ns3::EnumValue(ns3::GeographicPositions::WGS84));
-				const auto wgs84 = coordinateSystem->ToGeographic({100000.0, 0.0, 0.0});
+				coordinateSystem->SetAttribute("EarthSpheroid", ns3::EnumValue(ns3::GeographicPositions::WGS84));
+				const auto wgs84 = coordinateSystem->toGeographic({100000.0, 0.0, 0.0});
 
-				NS_TEST_EXPECT_MSG_NE(sphere.y, wgs84.y,
-									  "changing EarthSpheroid did not change the projection");
+				NS_TEST_EXPECT_MSG_NE(sphere.y, wgs84.y, "changing EarthSpheroid did not change the projection");
 			}
 		};
 
@@ -63,7 +63,3 @@ namespace vcle::itsg5 {
 		GeographicCoordinateSystemTestSuite GeographicCoordinateSystemTests;
 	} // namespace
 } // namespace vcle::itsg5
-
-int main(int argc, char** argv) {
-	return ns3::TestRunner::Run(argc, argv);
-}
