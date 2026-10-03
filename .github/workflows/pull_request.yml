@@ -1,0 +1,36 @@
+name: Code Quality
+
+on:
+  pull_request:
+  push:
+    branches:
+      - trunk
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: code-quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  clang-format:
+    uses: CAVISE/pipelines/.github/workflows/cpp-clang-format.yml@main
+    with:
+      container-image: ghcr.io/cavise/ventricle-ci:v1.0
+
+  clang-tidy:
+    uses: CAVISE/pipelines/.github/workflows/cpp-meson-clang-tidy.yml@main
+    with:
+      container-image: ghcr.io/cavise/ventricle-ci:v1.0
+      prepare-ns3: true
+
+  black:
+    uses: CAVISE/pipelines/.github/workflows/python-black.yml@main
+
+  pre-commit:
+    uses: CAVISE/pipelines/.github/workflows/python-pre-commit.yml@main
+    with:
+      skip-hooks: clang-format,clang-tidy,black
