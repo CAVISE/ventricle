@@ -1,8 +1,8 @@
 #pragma once
 
-#include "src/core/defs.hpp"
-#include "src/core/status.hpp"
-#include "src/core/types.hpp"
+#include <ventricle/core/defs.hpp>
+#include <ventricle/core/status.hpp>
+#include <ventricle/core/types.hpp>
 
 #include <cstddef>
 #include <cstdint>

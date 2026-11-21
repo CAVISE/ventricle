@@ -1,7 +1,7 @@
 #pragma once
 
-#include "src/core/defs.hpp"
-#include "src/extensions/its-g5/helpers/type_glue.hpp"
+#include <ventricle/core/defs.hpp>
+#include <ventricle/extensions/its-g5/helpers/type_glue.hpp>
 
 #include <ns3/vector.h>
 

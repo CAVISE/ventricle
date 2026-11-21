@@ -68,4 +68,4 @@ vanetza_dep = vanetza_subproject.dependency('btp', include_type: 'system')
 
 ventricle_include = include_directories('.')
 
-subdir('src')
+subdir('ventricle')

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "src/extensions/its-g5/helpers/geographic_coordinate_system.hpp"
+#include <ventricle/extensions/its-g5/helpers/geographic_coordinate_system.hpp>
 
 #include <ns3/geographic-positions.h>
 #include <ns3/object.h>

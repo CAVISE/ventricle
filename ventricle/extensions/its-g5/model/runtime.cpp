@@ -1,6 +1,6 @@
-#include "src/extensions/its-g5/model/runtime.hpp"
+#include <ventricle/extensions/its-g5/model/runtime.hpp>
 
-#include "src/extensions/its-g5/helpers/type_glue.hpp"
+#include <ventricle/extensions/its-g5/helpers/type_glue.hpp>
 
 #include <algorithm>
 #include <ns3/simulator.h>

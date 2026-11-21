@@ -1,6 +1,6 @@
 #pragma once
 
-#include "src/core/type_glue.hpp"
+#include <ventricle/core/type_glue.hpp>
 
 #include <ns3/mac48-address.h>
 #include <ns3/nstime.h>

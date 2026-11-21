@@ -1,9 +1,9 @@
-#include "src/extensions/its-g5/model/stack.hpp"
+#include <ventricle/extensions/its-g5/model/stack.hpp>
 
-#include "src/extensions/its-g5/helpers/packet_conversion.hpp"
-#include "src/extensions/its-g5/helpers/position_conversion.hpp"
-#include "src/extensions/its-g5/helpers/type_glue.hpp"
-#include "src/extensions/its-g5/model/runtime.hpp"
+#include <ventricle/extensions/its-g5/helpers/packet_conversion.hpp>
+#include <ventricle/extensions/its-g5/helpers/position_conversion.hpp>
+#include <ventricle/extensions/its-g5/helpers/type_glue.hpp>
+#include <ventricle/extensions/its-g5/model/runtime.hpp>
 
 #include <ns3/abort.h>
 #include <ns3/mac48-address.h>
