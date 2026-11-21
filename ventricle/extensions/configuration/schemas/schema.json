@@ -1,0 +1,73 @@
+{
+  "type": "object",
+  "properties": {
+    "vcle::itsg5::SimpleGeographicCoordinateSystem": {
+      "type": "object",
+      "properties": {
+        "EarthSpheroid": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "Earth spheroid used for geographic conversions",
+          "default": "WGS84",
+          "enum": [
+            "Sphere",
+            "GRS80",
+            "WGS84"
+          ]
+        }
+      },
+      "description": "Configuration for type vcle::itsg5::SimpleGeographicCoordinateSystem"
+    },
+    "vcle::sumo::Controller": {
+      "type": "object",
+      "properties": {
+        "Command": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "Quoted command line used to launch SUMO.",
+          "default": ""
+        },
+        "Port": {
+          "type": "integer",
+          "additionalProperties": false,
+          "description": "TCP port passed to libtraci; -1 selects an available port.",
+          "default": -1
+        },
+        "Retries": {
+          "type": "integer",
+          "additionalProperties": false,
+          "description": "Number of connection attempts made by libtraci.",
+          "default": 60
+        },
+        "StepInterval": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "Interval between synchronized TraCI steps.",
+          "default": "+1e+08ns"
+        },
+        "TraceFile": {
+          "type": "string",
+          "additionalProperties": false,
+          "description": "File to which libtraci writes command traces; empty disables tracing.",
+          "default": ""
+        },
+        "TraceGetters": {
+          "type": "boolean",
+          "additionalProperties": false,
+          "description": "Include getter calls in the libtraci trace.",
+          "default": true
+        },
+        "Verbose": {
+          "type": "boolean",
+          "additionalProperties": false,
+          "description": "Enable verbose libtraci connection output.",
+          "default": false
+        }
+      },
+      "description": "Configuration for type vcle::sumo::Controller"
+    }
+  },
+  "additionalProperties": false,
+  "title": "Ventricle auto-generated configuration schema. This schema supports objects specifically provided at generation time - refer to docs for how to use support your extensions",
+  "description": "This root element provides access to simulator-devided extension types."
+}

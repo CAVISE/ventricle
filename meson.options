@@ -1,0 +1,6 @@
+option(
+  'integration_tests',
+  type: 'feature',
+  value: 'disabled',
+  description: 'Enable Python integration tests across extensions',
+)

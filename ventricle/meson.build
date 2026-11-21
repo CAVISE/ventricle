@@ -14,5 +14,6 @@
 subdir('core')
 
 # Here all extension modules go.
+subdir('extensions/configuration')
 subdir('extensions/radio')
 subdir('extensions/its-g5')

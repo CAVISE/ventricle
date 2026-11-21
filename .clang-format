@@ -15,7 +15,7 @@ BreakTemplateDeclarations: Yes
 ColumnLimit: 100
 IncludeBlocks: Regroup
 IncludeCategories:
-  - Regex: '^"src/'
+  - Regex: '^<ventricle/'
     Priority: 1
   - Regex: '^<'
     Priority: 2
