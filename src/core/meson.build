@@ -4,6 +4,7 @@ ventricle_core_dep = declare_dependency(
 	include_directories: ventricle_include,
 	sources: files(
 		'defs.hpp',
+		'../../ventricle/core/error.hpp',
 		'type_glue.hpp',
 		'version.hpp',
 	),
