@@ -1,5 +1,5 @@
-#include "src/extensions/its-g5/helpers/type_glue.hpp"
-#include "src/extensions/its-g5/model/runtime.hpp"
+#include <ventricle/extensions/its-g5/helpers/type_glue.hpp>
+#include <ventricle/extensions/its-g5/model/runtime.hpp>
 
 #include <chrono>
 #include <ns3/simulator.h>

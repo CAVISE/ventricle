@@ -1,7 +1,7 @@
-#include "src/extensions/its-g5/model/access_adapter.hpp"
+#include <ventricle/extensions/its-g5/model/access_adapter.hpp>
 
-#include "src/extensions/its-g5/helpers/packet_conversion.hpp"
-#include "src/extensions/its-g5/helpers/type_glue.hpp"
+#include <ventricle/extensions/its-g5/helpers/packet_conversion.hpp>
+#include <ventricle/extensions/its-g5/helpers/type_glue.hpp>
 
 #include <ns3/abort.h>
 #include <vanetza/dcc/data_request.hpp>

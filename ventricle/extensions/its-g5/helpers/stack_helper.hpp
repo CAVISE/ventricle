@@ -1,8 +1,8 @@
 #pragma once
 
-#include "src/core/defs.hpp"
-#include "src/extensions/its-g5/helpers/geographic_coordinate_system.hpp"
-#include "src/extensions/its-g5/model/stack_config.hpp"
+#include <ventricle/core/defs.hpp>
+#include <ventricle/extensions/its-g5/helpers/geographic_coordinate_system.hpp>
+#include <ventricle/extensions/its-g5/model/stack_config.hpp>
 
 #include <memory>
 #include <ns3/node-container.h>

@@ -1,8 +1,8 @@
-#include "src/extensions/its-g5/helpers/stack_helper.hpp"
+#include <ventricle/extensions/its-g5/helpers/stack_helper.hpp>
 
-#include "src/extensions/its-g5/helpers/type_glue.hpp"
-#include "src/extensions/its-g5/model/runtime.hpp"
-#include "src/extensions/its-g5/model/stack.hpp"
+#include <ventricle/extensions/its-g5/helpers/type_glue.hpp>
+#include <ventricle/extensions/its-g5/model/runtime.hpp>
+#include <ventricle/extensions/its-g5/model/stack.hpp>
 
 #include <ns3/abort.h>
 #include <ns3/mobility-model.h>

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "src/extensions/its-g5/helpers/geographic_coordinate_system.hpp"
-#include "src/extensions/its-g5/model/access_adapter.hpp"
-#include "src/extensions/its-g5/model/runtime.hpp"
-#include "src/extensions/its-g5/model/stack_config.hpp"
+#include <ventricle/extensions/its-g5/helpers/geographic_coordinate_system.hpp>
+#include <ventricle/extensions/its-g5/model/access_adapter.hpp>
+#include <ventricle/extensions/its-g5/model/runtime.hpp>
+#include <ventricle/extensions/its-g5/model/stack_config.hpp>
 
 #include <ns3/mobility-model.h>
 #include <ns3/net-device.h>
