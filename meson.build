@@ -14,7 +14,7 @@ project(
   # Prefer locating dependency if it's more widely used than some specific
   # simulation software.
   subproject_dir: 'subprojects',
-  default_options: ['cpp_std=c++20'],
+  default_options: ['cpp_std=c++23'],
 )
 
 #############################
