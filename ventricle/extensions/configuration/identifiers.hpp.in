@@ -1,0 +1,42 @@
+#pragma once
+
+/**
+ * @file
+ * @brief Configuration document identifiers shared by parsing and schema generation.
+ *
+ * Meson generates this header from the identifier values in this module's meson.build.
+ * The views refer to string literals with static storage, including when borrowed by schema
+ * fields. Change the build definitions rather than editing the generated header.
+ */
+
+#include <string_view>
+
+namespace vcle::config::identifiers {
+
+	/// Object identifier to resolve instead of constructing a new object.
+	inline constexpr std::string_view reference = @REFERENCE@;
+	/// Registered ns-3 type name used by a named object definition.
+	inline constexpr std::string_view typeId = @TYPE_ID@;
+	/// Attribute values overriding the selected type's defaults.
+	inline constexpr std::string_view overrides = @OVERRIDES@;
+
+	/// Holder for device definitions.
+	inline constexpr std::string_view devices = @DEVICES@;
+	/// Holder for channel definitions.
+	inline constexpr std::string_view channels = @CHANNELS@;
+	/// Holder for general object definitions.
+	inline constexpr std::string_view objects = @OBJECTS@;
+	/// Holder for mobility model definitions.
+	inline constexpr std::string_view mobilityModels = @MOBILITY_MODELS@;
+	/// Holder for network stack definitions.
+	inline constexpr std::string_view networkStacks = @NETWORK_STACKS@;
+	/// Holder for application definitions.
+	inline constexpr std::string_view applications = @APPLICATIONS@;
+	/// Holder for node policy definitions.
+	inline constexpr std::string_view nodePolicies = @NODE_POLICIES@;
+	/// Holder for node definitions.
+	inline constexpr std::string_view nodes = @NODES@;
+	/// Holder for default definitions.
+	inline constexpr std::string_view defaults = @DEFAULTS@;
+
+} // namespace vcle::config::identifiers

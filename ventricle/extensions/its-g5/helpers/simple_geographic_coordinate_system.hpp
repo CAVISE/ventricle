@@ -15,8 +15,7 @@ namespace vcle::itsg5 {
 	 * `EarthSpheroid` ns-3 attribute selects the Earth model used for conversion.
 	 * Refer to ns3 documentation on differences.
 	 */
-	class SimpleGeographicCoordinateSystem final : public ns3::Object,
-												   public IGeographicCoordinateSystem {
+	class SimpleGeographicCoordinateSystem final : public ns3::Object, public IGeographicCoordinateSystem {
 	public:
 		/* ns3 runtime configuration. */
 		static ns3::TypeId GetTypeId();

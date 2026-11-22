@@ -8,6 +8,7 @@
 #include <ns3/mobility-model.h>
 #include <ns3/net-device.h>
 #include <ns3/packet.h>
+
 #include <vanetza/btp/port_dispatcher.hpp>
 #include <vanetza/geonet/router.hpp>
 
@@ -29,11 +30,7 @@ namespace vcle::itsg5 {
 		/**
 		 * Pass an incoming link-layer packet to the GeoNetworking router.
 		 */
-		void Indicate(
-			ns3::Ptr<const ns3::Packet> packet,
-			const ns3::Address& source,
-			const ns3::Address& destination
-		);
+		void Indicate(ns3::Ptr<const ns3::Packet> packet, const ns3::Address& source, const ns3::Address& destination);
 
 		/** Update the GeoNetworking position vector from the ns-3 mobility model. */
 		void UpdatePosition();

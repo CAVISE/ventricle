@@ -1,33 +1,26 @@
+#include <ventricle/extensions/its-g5/helpers/type_glue.hpp>
 #include <ventricle/extensions/its-g5/model/runtime.hpp>
 
-#include <ventricle/extensions/its-g5/helpers/type_glue.hpp>
-
 #include <algorithm>
+
 #include <ns3/simulator.h>
 
 namespace vcle::itsg5 {
-	void Runtime::schedule(
-		vanetza::Clock::time_point time, const Callback& callback, const void* scope
-	) {
+	void Runtime::schedule(vanetza::Clock::time_point time, const Callback& callback, const void* scope) {
 		const auto delay = std::max(time - now(), vanetza::Clock::duration::zero());
 		schedule(delay, callback, scope);
 	}
 
-	void Runtime::schedule(
-		vanetza::Clock::duration delay, const Callback& callback, const void* scope
-	) {
+	void Runtime::schedule(vanetza::Clock::duration delay, const Callback& callback, const void* scope) {
 		RemoveExpiredEvents();
-		auto event =
-			ns3::Simulator::Schedule(TypeGlue::convert<ns3::Time>(delay), [this, callback] {
-				callback(now());
-				RemoveExpiredEvents();
-			});
+		auto event = ns3::Simulator::Schedule(TypeGlue::convert<ns3::Time>(delay), [this, callback] {
+			callback(now());
+			RemoveExpiredEvents();
+		});
 		Events_.emplace(scope, event);
 	}
 
-	void Runtime::cancel(
-		const void* scope
-	) {
+	void Runtime::cancel(const void* scope) {
 		if (scope == nullptr) {
 			return;
 		}
@@ -44,8 +37,6 @@ namespace vcle::itsg5 {
 	}
 
 	void Runtime::RemoveExpiredEvents() {
-		std::erase_if(Events_, [](const auto& entry) {
-			return ns3::Simulator::IsExpired(entry.second);
-		});
+		std::erase_if(Events_, [](const auto& entry) { return ns3::Simulator::IsExpired(entry.second); });
 	}
 } // namespace vcle::itsg5

@@ -2,8 +2,10 @@
 
 #include <array>
 #include <cstdint>
+
 #include <ns3/packet.h>
 #include <ns3/test.h>
+
 #include <vanetza/common/byte_buffer.hpp>
 #include <vanetza/net/chunk_packet.hpp>
 #include <vanetza/net/cohesive_packet.hpp>
@@ -13,7 +15,8 @@ namespace vcle::itsg5 {
 	namespace {
 		class PacketConversionTest final : public ns3::TestCase {
 		public:
-			PacketConversionTest() : TestCase("preserves Vanetza wire bytes") {
+			PacketConversionTest()
+				: TestCase("preserves Vanetza wire bytes") {
 			}
 
 		private:
@@ -34,14 +37,14 @@ namespace vcle::itsg5 {
 				const auto restored = ToVanetzaPacket(*ns3Packet);
 				const auto* cohesive = boost::get<vanetza::CohesivePacket>(restored.get());
 				NS_TEST_ASSERT_MSG_NE(cohesive, nullptr, "received packet is not cohesive");
-				NS_TEST_EXPECT_MSG_EQ(cohesive->size(), bytes.size(),
-									  "received packet size changed");
+				NS_TEST_EXPECT_MSG_EQ(cohesive->size(), bytes.size(), "received packet size changed");
 			}
 		};
 
 		class PacketConversionTestSuite final : public ns3::TestSuite {
 		public:
-			PacketConversionTestSuite() : TestSuite("ventricle-its-g5-packet", Type::UNIT) {
+			PacketConversionTestSuite()
+				: TestSuite("ventricle-its-g5-packet", Type::UNIT) {
 				AddTestCase(new PacketConversionTest(), TestCase::Duration::QUICK);
 			}
 		};

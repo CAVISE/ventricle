@@ -9,7 +9,7 @@ project(
   version: files('.version'),
   license: 'GPL-2.0-or-later',
   license_files: 'LICENCE',
-  meson_version: '>=1.1.0',
+  meson_version: '>=1.3.0',
   # We pull subprojects that otherwise would be hard to find in system.
   # Prefer locating dependency if it's more widely used than some specific
   # simulation software.
@@ -67,5 +67,7 @@ vanetza_subproject = cmake.subproject('vanetza', options: vanetza_options)
 vanetza_dep = vanetza_subproject.dependency('btp', include_type: 'system')
 
 ventricle_include = include_directories('.')
+
+gtest_main_dep = dependency('gtest', version: '>=1.11', main: true, include_type: 'system')
 
 subdir('ventricle')

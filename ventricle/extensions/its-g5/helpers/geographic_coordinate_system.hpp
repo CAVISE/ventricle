@@ -23,11 +23,7 @@ namespace vcle::itsg5 {
 	public:
 		virtual ~IGeographicCoordinateSystem() = default;
 
-		VCLE_NODISCARD virtual GeographicPosition ToGeographic(
-			const ns3::Vector& position
-		) const = 0;
-		VCLE_NODISCARD virtual ns3::Vector ToCartesian(
-			const GeographicPosition& position
-		) const = 0;
+		VCLE_NODISCARD virtual GeographicPosition ToGeographic(const ns3::Vector& position) const = 0;
+		VCLE_NODISCARD virtual ns3::Vector ToCartesian(const GeographicPosition& position) const = 0;
 	};
 } // namespace vcle::itsg5

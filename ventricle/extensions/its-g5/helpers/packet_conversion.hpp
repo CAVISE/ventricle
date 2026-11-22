@@ -1,8 +1,10 @@
 #pragma once
 
 #include <memory>
-#include <ns3/ptr.h>
+
 #include <ns3/packet.h>
+#include <ns3/ptr.h>
+
 #include <vanetza/net/packet.hpp>
 
 namespace vcle::itsg5 {
