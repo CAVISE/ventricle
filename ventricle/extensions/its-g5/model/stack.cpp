@@ -1,13 +1,13 @@
-#include <ventricle/extensions/its-g5/model/stack.hpp>
-
 #include <ventricle/extensions/its-g5/helpers/packet_conversion.hpp>
 #include <ventricle/extensions/its-g5/helpers/position_conversion.hpp>
 #include <ventricle/extensions/its-g5/helpers/type_glue.hpp>
 #include <ventricle/extensions/its-g5/model/runtime.hpp>
+#include <ventricle/extensions/its-g5/model/stack.hpp>
+
+#include <utility>
 
 #include <ns3/abort.h>
 #include <ns3/mac48-address.h>
-#include <utility>
 
 namespace vcle::itsg5 {
 	Stack::Stack(
@@ -39,13 +39,8 @@ namespace vcle::itsg5 {
 		Stack_.Router.update_position(ToPositionFix(*Mobility_, CoordinateSystem_, Runtime_.now()));
 	}
 
-	void Stack::Indicate(
-		ns3::Ptr<const ns3::Packet> packet,
-		const ns3::Address& source,
-		const ns3::Address& destination
-	) {
-		if (packet == nullptr || !ns3::Mac48Address::IsMatchingType(source) ||
-			!ns3::Mac48Address::IsMatchingType(destination)) {
+	void Stack::Indicate(ns3::Ptr<const ns3::Packet> packet, const ns3::Address& source, const ns3::Address& destination) {
+		if (packet == nullptr || !ns3::Mac48Address::IsMatchingType(source) || !ns3::Mac48Address::IsMatchingType(destination)) {
 			return;
 		}
 

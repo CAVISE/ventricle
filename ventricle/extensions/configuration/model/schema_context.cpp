@@ -9,9 +9,7 @@ using namespace vcle;
 
 using namespace vcle::config::detail;
 
-Context& Context::withSchema(
-	glz::schema schema
-) {
+Context& Context::withSchema(glz::schema schema) {
 	schemas_.push(std::move(schema));
 	return *this;
 }
@@ -20,9 +18,7 @@ glz::schema& Context::schema() {
 	return schemas_.top();
 }
 
-Expected<> Context::walkProperty(
-	ns3::TypeId::AttributeInformation attribute
-) {
+Expected<> Context::walkProperty(ns3::TypeId::AttributeInformation attribute) {
 	if (!(attribute.flags & ns3::TypeId::ATTR_CONSTRUCT) || !attribute.accessor->HasSetter()) {
 		return {};
 	}
@@ -47,17 +43,13 @@ Expected<> Context::walkProperty(
 	// We prefer original initial value, since the schema generator will not modify it anyways.
 	const ns3::AttributeValue* value = ns3::PeekPointer(attribute.originalInitialValue);
 
-	auto result = withSchema(std::move(property)).invoke([&]() {
-		return writeAttributeValue(*this, attribute, value);
-	});
+	auto result = withSchema(std::move(property)).invoke([&]() { return writeAttributeValue(*this, attribute, value); });
 
 	if (!result) {
 		return std::unexpected(std::move(result.error()));
 	}
 
-	if (const auto& [_, hasInserted] =
-			schema().properties->try_emplace(store(attribute.name), std::move(*result));
-		!hasInserted) {
+	if (const auto& [_, hasInserted] = schema().properties->try_emplace(store(attribute.name), std::move(*result)); !hasInserted) {
 		return makeError(
 			std::errc::file_exists,
 			"attribute was already inserted into properties, duplicate found (attribute_name: {})",
@@ -69,9 +61,7 @@ Expected<> Context::walkProperty(
 }
 
 // Walk type properties and add them to the schema.
-Expected<> Context::walkProperties(
-	const ns3::TypeId& id
-) {
+Expected<> Context::walkProperties(const ns3::TypeId& id) {
 	for (std::size_t i = 0; i < id.GetAttributeN(); ++i) {
 		auto status = walkProperty(id.GetAttribute(i));
 		if (!status) {
@@ -82,15 +72,9 @@ Expected<> Context::walkProperties(
 	return {};
 }
 
-Expected<> Context::schemaForID(
-	const ns3::TypeId& id
-) {
+Expected<> Context::schemaForID(const ns3::TypeId& id) {
 	if (id.MustHideFromDocumentation()) {
-		return makeError(
-			std::errc::io_error,
-			"provided type is supposed to be hidden from user (type: {})",
-			id.GetName()
-		);
+		return makeError(std::errc::io_error, "provided type is supposed to be hidden from user (type: {})", id.GetName());
 	}
 
 	auto& schema = this->schema();

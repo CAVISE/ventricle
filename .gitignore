@@ -3,11 +3,17 @@
 /.clangd/
 /compile_commands.json
 
-# Meson downloads pinned upstream releases here, but does not build them.
+# Downloaded dependency sources and caches.
 /subprojects/ns-3/
+/subprojects/ns-3.*/
 /subprojects/vanetza/
+/subprojects/vanetza-*/
+/subprojects/glaze-*/
 /subprojects/packagecache/
 /subprojects/.wraplock
+
+# Python bytecode caches.
+__pycache__/
 
 # Editor and profiling artifacts.
 *.gcda

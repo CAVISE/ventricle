@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ns3/net-device.h>
+
 #include <vanetza/dcc/interface.hpp>
 
 namespace vcle::itsg5 {
@@ -8,8 +9,7 @@ namespace vcle::itsg5 {
 	public:
 		explicit AccessAdapter(ns3::Ptr<ns3::NetDevice> device);
 
-		void request(const vanetza::dcc::DataRequest& request,
-					 std::unique_ptr<vanetza::ChunkPacket> packet) override;
+		void request(const vanetza::dcc::DataRequest& request, std::unique_ptr<vanetza::ChunkPacket> packet) override;
 
 	private:
 		ns3::Ptr<ns3::NetDevice> Device_;

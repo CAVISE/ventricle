@@ -10,17 +10,21 @@ BinPackArguments: false
 BinPackParameters: OnePerLine
 BreakBeforeBraces: Attach
 BreakConstructorInitializers: BeforeComma
-BreakFunctionDefinitionParameters: true
+BreakFunctionDefinitionParameters: false
 BreakTemplateDeclarations: Yes
-ColumnLimit: 100
+ColumnLimit: 150
 IncludeBlocks: Regroup
 IncludeCategories:
   - Regex: '^<ventricle/'
     Priority: 1
-  - Regex: '^<'
+  - Regex: '^<[^/]+>$'
     Priority: 2
-  - Regex: '.*'
+  - Regex: '^<ns3/'
     Priority: 3
+  - Regex: '^<'
+    Priority: 4
+  - Regex: '.*'
+    Priority: 5
 IndentWidth: 4
 NamespaceIndentation: All
 PointerAlignment: Left

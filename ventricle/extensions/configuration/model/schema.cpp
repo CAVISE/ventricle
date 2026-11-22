@@ -1,3 +1,4 @@
+#include <ventricle/extensions/configuration/identifiers.hpp>
 #include <ventricle/extensions/configuration/model/holders.hpp>
 #include <ventricle/extensions/configuration/model/schema.hpp>
 #include <ventricle/extensions/configuration/model/schema_context.hpp>
@@ -12,11 +13,9 @@ using namespace vcle;
 using namespace vcle::config;
 using namespace vcle::config::detail;
 
-Expected<std::string> vcle::config::generateSchema(
-	std::span<const ns3::TypeId> types
-) {
+Expected<std::string> vcle::config::generateSchema(std::span<const ns3::TypeId> types) {
 	std::set<ns3::TypeId> seen;
-	for (auto type : types) {
+	for (const auto& type : types) {
 		if (!type.GetUid()) {
 			return makeError(std::errc::invalid_argument, "uninitialized TypeId");
 		}
@@ -45,26 +44,16 @@ Expected<std::string> vcle::config::generateSchema(
 			return std::unexpected(std::move(schema.error()));
 		}
 
-		glz::schema named;
-		named.type = "object";
-		named.additionalProperties = false;
-		named.required.emplace().emplace_back("typeId");
-		if (schema->required && !schema->required->empty()) {
-			named.required->emplace_back("overrides");
+		glz::schema named = *schema;
+		if (!named.required) {
+			named.required.emplace();
 		}
-		auto& properties = named.properties.emplace();
-		properties["typeId"].constant = ctx.store(id.GetName());
-		properties["overrides"] = *schema;
+		named.required->emplace_back(identifiers::typeId);
+		(*named.properties)[identifiers::typeId].constant = ctx.store(id.GetName());
 		namedEntries->oneOf->push_back(std::move(named));
 
-		if (const auto& [_, hasInserted] =
-				root.properties->try_emplace(ctx.store(id.GetName()), std::move(*schema));
-			!hasInserted) {
-			return makeError(
-				std::errc::file_exists,
-				"type was already inserted into properties, duplicate found (type_name: {})",
-				id.GetName()
-			);
+		if (const auto& [_, hasInserted] = root.properties->try_emplace(ctx.store(id.GetName()), std::move(*schema)); !hasInserted) {
+			return makeError(std::errc::file_exists, "type was already inserted into properties, duplicate found (type_name: {})", id.GetName());
 		}
 	}
 
@@ -90,11 +79,7 @@ Expected<std::string> vcle::config::generateSchema(
 
 	auto out = glz::write_json(root);
 	if (!out.has_value()) {
-		return makeError(
-			std::errc::io_error,
-			"failed to write JSON (error: {})",
-			out.error().custom_error_message
-		);
+		return makeError(std::errc::io_error, "failed to write JSON (error: {})", out.error().custom_error_message);
 	}
 
 	return *out;

@@ -58,9 +58,7 @@ namespace vcle {
 	 */
 	class StringErrorInfo : public IErrorInfo {
 	public:
-		explicit StringErrorInfo(
-			std::string message
-		)
+		explicit StringErrorInfo(std::string message)
 			: message_(std::move(message)) {
 		}
 
@@ -87,15 +85,11 @@ namespace vcle {
 		requires std::is_enum_v<Enum>
 	class EnumeratedErrorInfo final : public StringErrorInfo {
 	public:
-		explicit EnumeratedErrorInfo(
-			Enum code
-		)
+		explicit EnumeratedErrorInfo(Enum code)
 			: EnumeratedErrorInfo(code, std::to_string(std::to_underlying(code))) {
 		}
 
-		EnumeratedErrorInfo(
-			Enum code, std::string message
-		)
+		EnumeratedErrorInfo(Enum code, std::string message)
 			: StringErrorInfo(std::move(message))
 			, code_(code) {
 		}
@@ -128,9 +122,7 @@ namespace vcle {
 		 * Error::join instead.
 		 * @pre Both payloads are non-null and neither is an @ref ErrorList.
 		 */
-		ErrorList(
-			std::unique_ptr<IErrorInfo> first, std::unique_ptr<IErrorInfo> second
-		) {
+		ErrorList(std::unique_ptr<IErrorInfo> first, std::unique_ptr<IErrorInfo> second) {
 			errors_.reserve(2);
 			errors_.push_back(std::move(first));
 			errors_.push_back(std::move(second));
@@ -176,8 +168,7 @@ namespace vcle {
 
 		/// @brief Applies @ref ErrorHandlerTraits to a non-throwing function type.
 		template <typename Return, typename Argument>
-		struct ErrorHandlerTraits<Return(Argument) noexcept>
-			: ErrorHandlerTraits<Return(Argument)> {};
+		struct ErrorHandlerTraits<Return(Argument) noexcept> : ErrorHandlerTraits<Return(Argument)> {};
 
 		/// @brief Applies @ref ErrorHandlerTraits to the function behind a pointer.
 		template <typename Function>
@@ -185,23 +176,19 @@ namespace vcle {
 
 		/// @brief Extracts the signature of a mutable call operator.
 		template <typename Class, typename Return, typename Argument>
-		struct ErrorHandlerTraits<Return (Class::*)(Argument)>
-			: ErrorHandlerTraits<Return(Argument)> {};
+		struct ErrorHandlerTraits<Return (Class::*)(Argument)> : ErrorHandlerTraits<Return(Argument)> {};
 
 		/// @brief Extracts the signature of a const call operator.
 		template <typename Class, typename Return, typename Argument>
-		struct ErrorHandlerTraits<Return (Class::*)(Argument) const>
-			: ErrorHandlerTraits<Return(Argument)> {};
+		struct ErrorHandlerTraits<Return (Class::*)(Argument) const> : ErrorHandlerTraits<Return(Argument)> {};
 
 		/// @brief Extracts the signature of a non-throwing mutable call operator.
 		template <typename Class, typename Return, typename Argument>
-		struct ErrorHandlerTraits<Return (Class::*)(Argument) noexcept>
-			: ErrorHandlerTraits<Return(Argument)> {};
+		struct ErrorHandlerTraits<Return (Class::*)(Argument) noexcept> : ErrorHandlerTraits<Return(Argument)> {};
 
 		/// @brief Extracts the signature of a non-throwing const call operator.
 		template <typename Class, typename Return, typename Argument>
-		struct ErrorHandlerTraits<Return (Class::*)(Argument) const noexcept>
-			: ErrorHandlerTraits<Return(Argument)> {};
+		struct ErrorHandlerTraits<Return (Class::*)(Argument) const noexcept> : ErrorHandlerTraits<Return(Argument)> {};
 	} // namespace detail
 
 	/// Normalize callable qualifiers before inspecting @ref detail::ErrorHandlerTraits.
@@ -266,24 +253,18 @@ namespace vcle {
 	 */
 	class [[nodiscard]] Error final {
 	public:
-		explicit Error(
-			std::unique_ptr<IErrorInfo> payload
-		) noexcept
+		explicit Error(std::unique_ptr<IErrorInfo> payload) noexcept
 			: payload_(std::move(payload))
 			, checked_(!payload_) {
 		}
 
-		Error(
-			Error&& other
-		) noexcept
+		Error(Error&& other) noexcept
 			: Error(std::move(other.payload_)) {
 			other.checked_ = true;
 		}
 
 		/// Require the previous value to be checked before transfer; self-assignment has no effect.
-		Error& operator=(
-			Error&& other
-		) noexcept {
+		Error& operator=(Error&& other) noexcept {
 			if (this == &other) {
 				return *this;
 			}
@@ -315,9 +296,7 @@ namespace vcle {
 		 * Pass existing errors with @c std::move. The returned failure requires a fresh check, even
 		 * if both inputs were previously checked.
 		 */
-		static Error join(
-			Error first, Error second
-		) {
+		static Error join(Error first, Error second) {
 			std::unique_ptr<IErrorInfo> f = first.takePayload();
 			std::unique_ptr<IErrorInfo> s = second.takePayload();
 
@@ -339,9 +318,8 @@ namespace vcle {
 
 					for (auto& e : l->errors_) {
 						assert(
-							dynamic_cast<ErrorList*>(e.get()) == nullptr &&
-							"error list elements cannot be error list (nested lists are not "
-							"supported)"
+							dynamic_cast<ErrorList*>(e.get()) == nullptr && "error list elements cannot be error list (nested lists are not "
+																			"supported)"
 						);
 					}
 				};
@@ -396,15 +374,11 @@ namespace vcle {
 		 * detail::ErrorHandlerTraits.
 		 */
 		template <ErrorHandler... Handlers>
-		void handle(
-			Handlers&&... handlers
-		) {
+		void handle(Handlers&&... handlers) {
 			checked_ = true;
 			if (auto* list = dynamic_cast<ErrorList*>(payload_.get())) {
 				for (const auto& entry : list->errors()) {
-					static_cast<void>(
-						(tryHandle(entry.get(), std::forward<Handlers>(handlers)) || ...)
-					);
+					static_cast<void>((tryHandle(entry.get(), std::forward<Handlers>(handlers)) || ...));
 				}
 				return;
 			}
@@ -426,9 +400,7 @@ namespace vcle {
 		}
 
 		template <ErrorHandler Handler>
-		static bool tryHandle(
-			IErrorInfo* payload, Handler&& handler
-		) {
+		static bool tryHandle(IErrorInfo* payload, Handler&& handler) {
 			using Traits = HandlerTraits<Handler>;
 			using Argument = typename Traits::ArgumentType;
 			using Info = std::remove_reference_t<Argument>;
@@ -457,14 +429,21 @@ namespace vcle {
 	using Expected = std::expected<T, Error>;
 
 	/**
+	 * @brief Move an existing error into a failure for propagation through @ref Expected.
+	 * @param[in,out] error Error whose payload is transferred, leaving it as checked success.
+	 * @return An unexpected value owning the error, which must be handled or propagated.
+	 */
+	[[nodiscard]] inline std::unexpected<Error> forwardError(Error& error) noexcept {
+		return std::unexpected(std::move(error));
+	}
+
+	/**
 	 * @brief Return an owned diagnostic while acknowledging an error through @ref Error::handle.
 	 * @param[in,out] error Error to check and render; its payload remains owned by the wrapper.
 	 * @return An empty string for success, or the payload diagnostics joined by newlines in
 	 * visitation order, preserving empty entries.
 	 */
-	inline std::string toString(
-		Error& error
-	) {
+	inline std::string toString(Error& error) {
 		std::stringstream oss{std::ios::out};
 		bool first = true;
 
@@ -486,28 +465,19 @@ namespace vcle {
 	 * @return An unexpected value owning an unchecked @ref Error.
 	 */
 	template <std::derived_from<IErrorInfo> ErrorType, typename... Args>
-	[[nodiscard]] std::unexpected<Error> makeError(
-		Args&&... args
-	) {
+	[[nodiscard]] std::unexpected<Error> makeError(Args&&... args) {
 		return std::unexpected(Error(std::make_unique<ErrorType>(std::forward<Args>(args)...)));
 	}
 
 	/// Construct @ref EnumeratedErrorInfo with a portable @c std::errc code and formatted text.
 	template <typename... Args>
-	[[nodiscard]] std::unexpected<Error> makeError(
-		std::errc code, std::format_string<Args...> format, Args&&... args
-	) {
-		return makeError<EnumeratedErrorInfo<std::errc>>(
-			code,
-			std::format(format, std::forward<Args>(args)...)
-		);
+	[[nodiscard]] std::unexpected<Error> makeError(std::errc code, std::format_string<Args...> format, Args&&... args) {
+		return makeError<EnumeratedErrorInfo<std::errc>>(code, std::format(format, std::forward<Args>(args)...));
 	}
 
 	/// Construct @ref StringErrorInfo with formatted text for propagation through @ref Expected.
 	template <typename... Args>
-	[[nodiscard]] std::unexpected<Error> makeError(
-		std::format_string<Args...> format, Args&&... args
-	) {
+	[[nodiscard]] std::unexpected<Error> makeError(std::format_string<Args...> format, Args&&... args) {
 		return makeError<StringErrorInfo>(std::format(format, std::forward<Args>(args)...));
 	}
 

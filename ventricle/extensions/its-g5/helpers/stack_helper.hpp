@@ -5,9 +5,10 @@
 #include <ventricle/extensions/its-g5/model/stack_config.hpp>
 
 #include <memory>
+#include <vector>
+
 #include <ns3/node-container.h>
 #include <ns3/ptr.h>
-#include <vector>
 
 namespace vcle::itsg5 {
 	class Runtime;
@@ -18,8 +19,7 @@ namespace vcle::itsg5 {
 		StackHelper(Runtime& runtime, const IGeographicCoordinateSystem& coordinateSystem);
 
 		void SetConfig(const StackConfig& config);
-		VCLE_NODISCARD std::vector<std::shared_ptr<Stack>>
-		Install(const ns3::NodeContainer& nodes) const;
+		VCLE_NODISCARD std::vector<std::shared_ptr<Stack>> Install(const ns3::NodeContainer& nodes) const;
 
 	private:
 		Runtime& Runtime_;

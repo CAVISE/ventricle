@@ -1,3 +1,27 @@
+configuration_identifier_values = {
+    'REFERENCE': 'x-ventricle-reference',
+    'TYPE_ID': 'x-ventricle-type',
+    'OVERRIDES': 'overrides',
+    'DEVICES': 'devices',
+    'CHANNELS': 'channels',
+    'OBJECTS': 'objects',
+    'MOBILITY_MODELS': 'mobilityModels',
+    'NETWORK_STACKS': 'networkStacks',
+    'APPLICATIONS': 'applications',
+    'NODE_POLICIES': 'nodePolicies',
+    'NODES': 'nodes',
+    'DEFAULTS': 'defaults',
+}
+configuration_identifier_data = configuration_data()
+foreach name, value : configuration_identifier_values
+    configuration_identifier_data.set_quoted(name, value)
+endforeach
+configuration_identifiers = configure_file(
+    input: 'identifiers.hpp.in',
+    output: 'identifiers.hpp',
+    configuration: configuration_identifier_data,
+)
+
 glaze_dep = dependency(
     'glaze',
     version: '=9.0.0',
@@ -14,6 +38,7 @@ endif
 configuration_schema = static_library(
     'ventricle-configuration-schema',
     [
+        configuration_identifiers,
         'model/schema.cpp',
         'model/schema_context.cpp',
         'model/schema_values.cpp',
@@ -30,15 +55,17 @@ configuration_schema_dep = declare_dependency(
 configuration = static_library(
     'ventricle-configuration',
     [
+        configuration_identifiers,
         'model/parser/memory_identifiers_repository.cpp',
         'model/parser/nearest_scope_selection_policy.cpp',
+        'model/parser/object_factory.cpp',
     ],
     install: true,
-    dependencies: ventricle_core_dep,
+    dependencies: [ventricle_core_dep, glaze_dep],
 )
 configuration_dep = declare_dependency(
     link_with: configuration,
-    dependencies: ventricle_core_dep,
+    dependencies: [ventricle_core_dep, glaze_dep],
 )
 
 subdir('tests')

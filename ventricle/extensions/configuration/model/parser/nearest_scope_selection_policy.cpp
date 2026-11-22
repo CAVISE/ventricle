@@ -4,9 +4,7 @@
 
 using namespace vcle::config;
 
-void NearestScopeSelectionPolicy::setContext(
-	const IdentifiersRepositoryContext& context
-) {
+void NearestScopeSelectionPolicy::setContext(const IdentifiersRepositoryContext& context) {
 	context_ = &context;
 	selectedDistance_.reset();
 }

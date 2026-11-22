@@ -69,10 +69,5 @@ vanetza_dep = vanetza_subproject.dependency('btp', include_type: 'system')
 ventricle_include = include_directories('.')
 
 gtest_main_dep = dependency('gtest', version: '>=1.11', main: true, include_type: 'system')
-python = import('python').find_installation(
-  modules: ['pytest'],
-  required: get_option('integration_tests'),
-)
-pytest_config = files('pytest.ini')
 
 subdir('ventricle')
