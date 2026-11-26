@@ -9,7 +9,7 @@ test(
     '--basetemp=' + (meson.current_build_dir() / 'pytest-tmp'),
   ],
   workdir: meson.current_build_dir(),
-  suite: test_suite_large,
-  priority: test_priority_normal,
+  suite: large,
+  priority: normal,
   timeout: 60,
 )

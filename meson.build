@@ -74,13 +74,13 @@ gtest_main_dep = dependency('gtest', version: '>=1.11', main: true, include_type
 # Test definitions #
 ####################
 
-test_suite_large = 'large'
-test_suite_medium = 'medium'
-test_suite_light = 'light'
+large = 'large'
+medium = 'medium'
+light = 'light'
 
-test_priority_critical = 100
-test_priority_normal = 0
-test_priority_optional = -100
+critical = 100
+normal = 0
+optional = -100
 
 
 subdir('ventricle')
