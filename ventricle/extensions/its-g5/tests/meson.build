@@ -34,13 +34,31 @@ stack_test = executable(
 	dependencies: [ventricle_itsg5_dep],
 )
 
-test('its-g5-runtime', runtime_test, args: ['--suite=ventricle-its-g5-runtime'])
+test('its-g5-runtime', runtime_test,
+  args: ['--suite=ventricle-its-g5-runtime'],
+  suite: light,
+  priority: critical)
+
 test('its-g5-address-conversion', address_conversion_test,
-	 args: ['--suite=ventricle-its-g5-address'])
+	args: ['--suite=ventricle-its-g5-address'],
+  suite: light,
+  priority: normal)
+
 test('its-g5-packet-conversion', packet_conversion_test,
-     args: ['--suite=ventricle-its-g5-packet'])
+  args: ['--suite=ventricle-its-g5-packet'],
+  suite: light,
+  priority: normal)
+
 test('its-g5-position-conversion', position_conversion_test,
-     args: ['--suite=ventricle-its-g5-position'])
+  args: ['--suite=ventricle-its-g5-position'],
+  suite: light,
+  priority: normal)
+
 test('geographic-coordinate-system', geographic_coordinate_system_test,
-	 args: ['--suite=ventricle-geographic-coordinate-system'])
-test('its-g5-stack', stack_test)
+	args: ['--suite=ventricle-geographic-coordinate-system'],
+  suite: light,
+  priority: normal)
+
+test('its-g5-stack', stack_test,
+  suite: light,
+  priority: critical)

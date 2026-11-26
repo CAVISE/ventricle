@@ -70,4 +70,17 @@ ventricle_include = include_directories('.')
 
 gtest_main_dep = dependency('gtest', version: '>=1.11', main: true, include_type: 'system')
 
+####################
+# Test definitions #
+####################
+
+large = 'large'
+medium = 'medium'
+light = 'light'
+
+critical = 100
+normal = 0
+optional = -100
+
+
 subdir('ventricle')

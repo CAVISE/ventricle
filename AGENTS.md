@@ -121,6 +121,20 @@ The code you should document is as follows:
 - Put `TEST`, `TEST_F`, and `TEST_P` declarations at file scope; reserve namespaces for test fixtures and their helpers.
 - Link GoogleTest only into test targets. Tests using the ns-3 simulator must clean up simulator state between cases.
 
+### Test suites
+
+- `large`: Tests that require substantial setup or additional system binaries. These tests are generally written in Python.
+- `medium`: Normal tests that require mocks, functionality from other components, or little system setup, such as a configuration file.
+- `light`: Small unit tests testing a single function or a small class.
+
+### Test priorities
+
+- `critical`: Tests that must be run to ensure the simulator operates correctly.
+- `normal`: Tests that should be run.
+- `optional`: Tests that are not strictly required.
+
+Each test must have at least one suite (`large`, `medium`, or `light`) and one priority (`critical`, `normal`, or `optional`).
+
 ## Wrapped dependencies
 
 - ...
